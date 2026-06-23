@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LINSY 林氏 - 商城WEB端交易链路 Demo</title>
+  <link rel="stylesheet" href="./mall-trade-demo.css" />
+</head>
+<body>
+  <div id="boot-banner" style="background:#4ed9cc;color:#fff;padding:14px;text-align:center;font-family:sans-serif;font-size:14px">
+    LINSY Demo 正在加载… 若超过 10 秒仍为空白，请按 Ctrl+F5
+  </div>
+  <div id="app"></div>
+  <noscript>
+    <div style="padding:24px;background:#fff3cd;color:#856404;font-family:sans-serif;text-align:center">
+      请启用 JavaScript 后刷新页面。
+    </div>
+  </noscript>
+  <script>
+    window.__demoLoadError = function (name) {
+      var banner = document.getElementById('boot-banner');
+      if (banner) banner.style.background = '#e53935';
+      var app = document.getElementById('app');
+      if (!app) return;
+      app.innerHTML = '<div style="padding:24px;font-family:sans-serif;max-width:560px;margin:0 auto">'
+        + '<h2 style="color:#e53935;margin-bottom:12px">Demo 加载失败</h2>'
+        + '<p>无法加载 <code>' + name + '</code></p>'
+        + '<p style="margin-top:12px;color:#56646d">请确认仓库根目录已上传全部 5 个文件：index.html、mall-trade-demo.js、mall-trade-demo.css、mall-i18n.js、.nojekyll</p>'
+        + '</div>';
+    };
+    window.addEventListener('error', function (e) {
+      var banner = document.getElementById('boot-banner');
+      if (banner) banner.style.background = '#e53935';
+      var app = document.getElementById('app');
+      if (app && !app.querySelector('.topbar')) {
+        app.innerHTML = '<pre style="padding:24px;color:#e53935;white-space:pre-wrap;font-family:sans-serif">'
+          + 'JS Error: ' + e.message + '\n' + (e.filename || '') + ':' + (e.lineno || '') + '</pre>';
+      }
+    });
+  </script>
+  <script src="./mall-i18n.js" onerror="__demoLoadError('mall-i18n.js')"></script>
+  <script src="./mall-trade-demo.js" onerror="__demoLoadError('mall-trade-demo.js')"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var banner = document.getElementById('boot-banner');
+      if (banner) banner.remove();
+    });
+  </script>
+</body>
+</html>
