@@ -4,47 +4,5110 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LINSY 林氏 - 商城WEB端交易链路 Demo</title>
-  <link rel="stylesheet" href="./mall-trade-demo.css" />
+  <style>
+:root {
+  --primary: #4ed9cc;
+  --primary-dark: #3bc4b8;
+  --primary-soft: rgba(78, 217, 204, 0.12);
+  --text: #2b3136;
+  --muted: #8a959c;
+  --line: #e8edef;
+  --bg: #f5f7f8;
+  --card: #fff;
+  --tag-bg: #fff0de;
+  --tag-text: #d7892c;
+  --danger: #e05c6a;
+  --footer-bg: #2d3439;
+  --footer-text: #b8c0c5;
+  --shadow: 0 8px 24px rgba(20, 45, 58, 0.08);
+  --container: 1280px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app { text-align: left; }
+
+button, input, select { font: inherit; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Top bar */
+.topbar {
+  background: var(--primary);
+  color: #fff;
+  font-size: 12px;
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+  gap: 16px;
+}
+
+.topbar-left { flex-shrink: 0; }
+
+.topbar-right-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.service-info {
+  opacity: 0.95;
+  white-space: nowrap;
+}
+
+.topbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.user-greet { font-weight: 500; }
+.icon-exit { opacity: 0.85; margin-left: 4px; cursor: pointer; }
+
+.switch-wrap { position: relative; }
+.switch-btn {
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+.switch-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  color: var(--text);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  min-width: 100px;
+  z-index: 100;
+  overflow: hidden;
+}
+.switch-menu.open { display: block; }
+.switch-option {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.switch-option:hover, .switch-option.active { background: var(--primary-soft); }
+.sep { opacity: 0.6; }
+.guide { cursor: pointer; }
+
+/* Header */
+.header {
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  padding: 4px 10px 4px 0;
+  margin-right: 4px;
+}
+
+.brand-en {
+  font-size: 28px;
+  font-weight: 800;
+  color: #3bc4b8;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.brand-cn {
+  font-size: 18px;
+  color: #2b3136;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex: 0 1 auto;
+  justify-content: flex-start;
+  margin-left: 0;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  width: 220px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.nav-link {
+  position: relative;
+  padding: 8px 0;
+  color: #4a5560;
+  font-size: 15px;
+  transition: color 0.15s;
+}
+
+.nav-link:hover { color: var(--primary-dark); }
+.nav-link.active {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -20px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.nav-link .arrow { font-size: 10px; margin-left: 2px; }
+.nav-link .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  padding: 8px 14px;
+  outline: none;
+  min-width: 0;
+}
+
+.search-btn {
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.search-box.small { width: 180px; }
+
+.main { min-height: calc(100vh - 200px); padding-bottom: 48px; }
+
+/* Buttons */
+.btn-primary {
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary.full { width: 100%; }
+.btn-primary.small { padding: 8px 16px; font-size: 13px; }
+
+.btn-ghost {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-ghost:hover { border-color: var(--primary); color: var(--primary-dark); }
+.btn-ghost.small { padding: 8px 14px; font-size: 13px; }
+
+.btn-icon {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 6px;
+  font-size: 22px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btn-icon:hover { border-color: var(--primary); color: var(--primary-dark); }
+
+.link-btn {
+  border: none;
+  background: transparent;
+  color: var(--primary-dark);
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+.link-btn:hover { text-decoration: underline; }
+.link-btn.danger { color: var(--danger); }
+
+/* Hero */
+.hero-carousel {
+  position: relative;
+  overflow: hidden;
+  background: #eef1f3;
+  max-height: 480px;
+}
+
+.hero-track {
+  display: flex;
+  transition: transform 0.45s ease;
+}
+
+.hero-slide {
+  flex: 0 0 100%;
+  position: relative;
+  min-height: 420px;
+}
+
+.hero-img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.45) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 8%;
+  color: #fff;
+}
+
+.hero-overlay h2 { font-size: 36px; margin-bottom: 10px; }
+.hero-overlay p { font-size: 16px; opacity: 0.9; margin-bottom: 20px; max-width: 480px; }
+
+.hero-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: var(--shadow);
+}
+
+.hero-arrow.prev { left: 20px; }
+.hero-arrow.next { right: 20px; }
+
+.hero-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+}
+
+.hero-dot.on { background: var(--primary); width: 24px; border-radius: 4px; }
+
+/* Home sections */
+.home-section { padding: 40px 0 20px; }
+.section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+.section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+.home-cats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.home-cat-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s;
+  cursor: pointer;
+}
+
+.home-cat-card:hover { transform: translateY(-3px); }
+.home-cat-img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.home-cat-card span {
+  display: block;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.home-promo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 24px 0 48px;
+}
+
+.promo-card {
+  display: flex;
+  gap: 20px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  padding: 16px;
+  align-items: center;
+}
+
+.promo-img { width: 200px; height: 140px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+.promo-card h3 { font-size: 18px; margin-bottom: 8px; }
+.promo-card p { color: var(--muted); margin-bottom: 12px; font-size: 13px; }
+
+/* Category bar */
+.category-bar {
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+}
+
+.category-scroll {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-scroll::-webkit-scrollbar { display: none; }
+
+.cat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  min-width: 90px;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cat-item.active { color: var(--primary-dark); background: var(--primary-soft); }
+.cat-img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.cat-arrow { border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--muted); padding: 8px; }
+
+/* Products page */
+.page-products {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  padding: 24px 0 48px;
+}
+
+.page-products.with-filter { grid-template-columns: 240px 1fr; }
+
+.filter-panel {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  height: fit-content;
+  position: sticky;
+  top: 88px;
+}
+
+.filter-head {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.filter-block { margin-bottom: 18px; }
+.filter-block h4 { font-size: 13px; margin-bottom: 10px; color: var(--muted); }
+
+.chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.chip.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
+.range-bar { height: 4px; background: var(--line); border-radius: 2px; margin-bottom: 10px; position: relative; }
+.range-fill { height: 100%; width: 60%; background: var(--primary); border-radius: 2px; }
+.check { display: block; font-size: 13px; margin-bottom: 6px; cursor: pointer; }
+
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sort-item {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.sort-item.active { color: var(--text); font-weight: 600; }
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.home-grid { grid-template-columns: repeat(5, 1fr); }
+
+.product-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(20, 45, 58, 0.12);
+}
+
+.card-img { position: relative; aspect-ratio: 1; background: #eef1f3; }
+.product-img { width: 100%; height: 100%; object-fit: cover; }
+
+.thumb-dots {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.dot-img { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; border: 1px solid #fff; }
+.more { font-size: 11px; background: rgba(0,0,0,0.5); color: #fff; padding: 2px 6px; border-radius: 4px; }
+
+.card-body { padding: 12px; }
+.card-title-row { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.card-title { font-size: 13px; font-weight: 500; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+.fav-btn { border: none; background: transparent; font-size: 18px; cursor: pointer; color: var(--muted); flex-shrink: 0; }
+.fav-btn.on { color: var(--danger); }
+.card-price { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.card-meta { font-size: 11px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 32px;
+}
+
+.pagination.right { justify-content: flex-end; }
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.page-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.page-ellipsis { padding: 0 8px; color: var(--muted); }
+
+/* Product detail - ref layout image 1/2 */
+.page-detail {
+  padding: 24px 0 56px;
+  background: var(--bg);
+}
+
+.detail-hero {
+  margin-bottom: 20px;
+}
+
+.detail-panel-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(20, 45, 58, 0.06);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.detail-tabs-ref {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #eef1f3;
+  margin-bottom: 0;
+  background: #fff;
+  border-radius: 0;
+  padding: 0 20px;
+}
+
+.detail-tabs-ref .tab {
+  border: none;
+  background: transparent;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: #78848d;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.detail-tabs-ref .tab.active {
+  color: #2b3136;
+  font-weight: 600;
+  border-bottom-color: var(--primary);
+}
+
+.detail-content-ref {
+  background: #fff;
+  border-radius: 0;
+  padding: 24px 28px 0;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+.detail-desc-unified {
+  background: #fff;
+}
+
+.detail-desc-unified .detail-block-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 14px 0 8px;
+  color: #2b3136;
+}
+
+.detail-desc-unified .detail-block-title:first-child {
+  margin-top: 0;
+}
+
+.detail-desc-unified .detail-overview {
+  color: #56646d;
+  line-height: 1.75;
+  margin: 0 0 0;
+}
+
+.detail-desc-unified .selling-points-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #56646d;
+  line-height: 1.75;
+}
+
+.detail-desc-unified .selling-points-list li {
+  margin-bottom: 6px;
+}
+
+.detail-desc-unified .selling-points-list li:last-child {
+  margin-bottom: 0;
+}
+
+.detail-content-ref .detail-block-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 20px 0 10px;
+  color: #2b3136;
+}
+
+.detail-content-ref:not(:has(.detail-desc-unified)) {
+  padding-bottom: 24px;
+}
+
+.detail-recommend-tab .recommend-section-ref {
+  margin-top: 20px;
+}
+
+.detail-recommend-tab .recommend-section-ref:first-of-type {
+  margin-top: 12px;
+}
+
+.detail-panel-card .spec-attr-table-inline {
+  border: 1px solid #dfe6ea;
+  margin: 8px 0 0;
+}
+
+.spec-attr-table-inline {
+  border: 1px solid #dfe6ea;
+  margin: 0;
+}
+
+.spec-attr-cell-inline {
+  padding: 11px 14px;
+  border: 1px solid #dfe6ea;
+  font-size: 13px;
+  background: #fff;
+  min-height: 42px;
+}
+
+.spec-attr-cell-inline .spec-attr-label {
+  color: #78848d;
+  font-weight: 400;
+}
+
+.spec-attr-cell-inline .spec-attr-val {
+  color: #2b3136;
+  font-weight: 500;
+}
+
+/* Lifestyle carousel - flush with attributes */
+.carousel-block-ref {
+  margin: 0;
+  background: #fff;
+  box-shadow: none;
+  padding: 0;
+}
+
+.detail-recommend-block {
+  background: #fff;
+  padding: 0 28px 28px;
+}
+
+.detail-panel-card .recommend-section-ref,
+.detail-panel-card .recommend-section {
+  margin-bottom: 24px;
+  background: #fff;
+}
+
+.detail-panel-card .recommend-section-ref:last-child,
+.detail-panel-card .recommend-section:last-child {
+  margin-bottom: 0;
+}
+
+.detail-panel-card .recommend-section-head h3 {
+  margin-bottom: 12px;
+}
+
+.carousel-block-ref .carousel-img {
+  position: relative;
+  border-radius: 0;
+  aspect-ratio: 16 / 5.5;
+  overflow: hidden;
+  background: #eef1f3;
+}
+
+.carousel-block-ref .carousel-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  font-size: 26px;
+  color: #666;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-dots-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 0;
+  z-index: 3;
+}
+
+.carousel-dots-overlay .carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  padding: 0;
+}
+
+.carousel-dots-overlay .carousel-dot.on {
+  background: var(--primary);
+  width: 22px;
+  border-radius: 4px;
+}
+
+/* Recommend cards - ref image 3 */
+.recommend-card-ref {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.recommend-card-ref .card-img {
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.recommend-card-ref .card-body {
+  padding: 0 2px 8px;
+}
+
+.rec-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.rec-title-row .card-title-single {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  margin: 0;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rec-fav-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dfe6ea;
+  border-radius: 4px;
+  background: #fff;
+  color: #78848d;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rec-fav-btn.on {
+  color: var(--danger);
+  border-color: #f0c4c4;
+}
+
+.card-price-split {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  margin-bottom: 4px;
+  line-height: 1.1;
+}
+
+.card-price-split .price-sym {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2b3136;
+  margin-right: 2px;
+}
+
+.card-price-split .price-int {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2b3136;
+}
+
+.card-price-split .price-dec {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2b3136;
+}
+
+.card-price-split .price-ccy {
+  font-size: 12px;
+  font-weight: 400;
+  color: #9aa5ad;
+  margin-left: 4px;
+}
+
+.card-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: #3bc4b8;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.card-item-row {
+  font-size: 11px;
+  color: #9aa5ad;
+  line-height: 1.4;
+}
+
+.recommend-section-ref,
+.recommend-section {
+  margin-bottom: 32px;
+  background: #fff;
+}
+
+.recommend-section-head h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #2b3136;
+}
+
+.recommend-carousel {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.rec-arrow {
+  flex: 0 0 28px;
+  align-self: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #dfe6ea;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+}
+
+.recommend-grid-5 {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  min-width: 0;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+
+.detail-gallery {
+  display: flex;
+  gap: 12px;
+}
+
+.thumb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.thumb {
+  width: 72px;
+  height: 72px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  background: #eef1f3;
+}
+
+.thumb.active { border-color: var(--primary); }
+.thumb-img { width: 100%; height: 100%; object-fit: cover; }
+
+.main-image {
+  flex: 1;
+  position: relative;
+  background: #eef1f3;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+
+.detail-main-img { width: 100%; height: 100%; object-fit: cover; }
+
+.detail-image-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: var(--shadow);
+  color: #666;
+}
+
+.detail-image-nav.prev { left: 12px; }
+.detail-image-nav.next { right: 12px; }
+
+.detail-info { padding-top: 4px; }
+
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: #fff3e6;
+  color: #d7892c;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.detail-title {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.detail-meta {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.detail-status-row { margin-bottom: 14px; }
+
+.status-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-chip.on-sale {
+  background: #e8f8f5;
+  color: #1a9e8e;
+}
+
+.sale-type-pills {
+  display: inline-flex;
+  gap: 0;
+  padding: 3px;
+  background: #eef1f3;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+
+/* Stock / Custom split bar (ref left) */
+.sale-type-split {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 360px;
+  height: 38px;
+  margin-bottom: 16px;
+  border: 1px solid #dfe6ea;
+  background: #fff;
+  overflow: hidden;
+}
+
+.sale-type-split::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 54%;
+  background: var(--primary);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 100%, 0 100%);
+  transition: left 0.25s ease, clip-path 0.25s ease;
+  z-index: 0;
+}
+
+.sale-type-split.is-custom::before {
+  left: 46%;
+  width: 54%;
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.sale-type-split .pill {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #78848d;
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+}
+
+.sale-type-split .pill.active {
+  color: #fff;
+  font-weight: 600;
+}
+
+.sale-type-pills .pill {
+  border: none;
+  background: transparent;
+  padding: 8px 22px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--muted);
+  border-radius: 999px;
+}
+
+.sale-type-pills .pill.active {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: none;
+  border-bottom: none;
+}
+
+.sale-type-tabs {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail-price-wrap { margin-bottom: 12px; }
+.detail-price { font-size: 32px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+.detail-price-usd { font-size: 34px; }
+
+.logistics {
+  font-size: 13px;
+  color: #78848d;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+.detail-logistics-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 2px;
+}
+
+.detail-logistics-row > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.logistics-sep {
+  margin: 0 10px;
+  color: #c5cdd3;
+  font-weight: 300;
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #e8edef;
+}
+
+.mode-tab {
+  border: none;
+  background: transparent;
+  padding: 8px 0 10px;
+  font-size: 14px;
+  color: #78848d;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.mode-tab.active {
+  color: var(--text);
+  font-weight: 600;
+  border-bottom-color: var(--primary);
+}
+
+.detail-logistics-main span { margin-right: 20px; }
+.detail-logistics-specs { margin-top: 4px; }
+.detail-logistics-specs span { margin-right: 16px; }
+
+.mode-switch {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.detail-divider { margin: 0 8px; opacity: 0.45; }
+
+.detail-logistics-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #56646d;
+  margin-bottom: 4px;
+}
+
+.logistics-ico { width: 16px; text-align: center; opacity: 0.65; flex-shrink: 0; font-size: 13px; }
+
+.attr-btn-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row;
+  min-width: auto;
+  padding: 5px 12px 5px 5px;
+  border-radius: 6px;
+  border: 1px solid #dfe6ea;
+  background: #fff;
+}
+
+.attr-btn-inline.active {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.attr-btn-inline span {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.attr-btn-unlabeled {
+  min-width: 72px;
+  padding: 8px 14px;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.attr-btn.is-disabled,
+.attr-btn-chip.is-disabled,
+.attr-btn-inline.is-disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  border-color: #e8edef;
+  color: #b8c0c5;
+  box-shadow: none;
+}
+
+.attr-btn-inline.is-disabled span {
+  color: #b8c0c5;
+}
+
+.attr-btn.is-disabled:hover,
+.attr-btn-chip.is-disabled:hover,
+.attr-btn-inline.is-disabled:hover {
+  border-color: #e8edef;
+}
+
+.option-img-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.attr-options-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attr-btn-chip {
+  min-width: 72px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #dfe6ea;
+  background: #fff;
+  font-size: 13px;
+  color: #56646d;
+}
+
+.attr-btn-chip.active {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.qty-row-ref {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  width: 100%;
+  padding-left: 0;
+}
+
+.qty-row-main {
+  width: 100%;
+  text-align: left;
+}
+
+.qty-row-main > label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.qty-row-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.qty-row-ref .stepper {
+  flex-shrink: 0;
+}
+
+.qty-row-ref .qty-hint {
+  text-align: left;
+}
+
+.detail-actions-ref {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-top: 4px;
+}
+
+.detail-actions-ref .btn-wishlist {
+  flex: 1;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: lowercase;
+  border-radius: 6px;
+}
+
+.detail-actions-ref .btn-fav {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #dfe6ea;
+  background: #fff;
+  color: #78848d;
+  font-size: 20px;
+  border-radius: 6px;
+}
+
+.detail-actions-ref .btn-fav.on {
+  color: var(--danger);
+  border-color: #f0c4c4;
+}
+
+.oth-attr-select {
+  width: 100%;
+  max-width: 360px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: #fff;
+  color: var(--text);
+}
+
+.mode-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted);
+  min-width: 110px;
+}
+
+.mode-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.attr-btn-rich {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 96px;
+  padding: 10px 8px 8px;
+  border-radius: 8px;
+}
+
+.attr-btn-rich span { font-size: 11px; text-align: center; line-height: 1.2; }
+
+.attr-btn.active {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+/* Spec attributes table (ref right: 4-col inline label:value) */
+.spec-attr-table {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid #dfe6ea;
+  margin: 16px 0 24px;
+  background: #fff;
+}
+
+.spec-attr-table-inline {
+  grid-template-columns: repeat(var(--attr-cols, 4), 1fr);
+}
+
+.spec-attr-cell-inline {
+  padding: 12px 14px;
+  border: 1px solid #dfe6ea;
+  font-size: 13px;
+  color: #56646d;
+  line-height: 1.45;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.spec-attr-cell-inline .spec-attr-label {
+  color: #78848d;
+  margin-right: 4px;
+}
+
+.spec-attr-cell-inline .spec-attr-val {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.spec-attr-cell {
+  display: flex;
+  min-height: 44px;
+  border: 1px solid #dfe6ea;
+}
+
+.spec-attr-k {
+  flex: 0 0 42%;
+  background: #f3f5f7;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #56646d;
+  display: flex;
+  align-items: center;
+}
+
+.spec-attr-v {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  word-break: break-word;
+}
+
+.selling-points-list {
+  padding-left: 18px;
+  color: #56646d;
+  line-height: 1.75;
+}
+
+.selling-points-list li { margin-bottom: 8px; }
+
+.detail-copy-grid {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.detail-copy-main h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.fact-card {
+  background: #f3f5f7;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.fact-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.detail-storyboard { margin-top: 20px; border-radius: 12px; overflow: hidden; }
+.detail-story-img { width: 100%; max-height: 520px; object-fit: cover; }
+
+.detail-block-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 20px 0 10px;
+  color: var(--text);
+}
+
+.detail-block-title:first-child { margin-top: 0; }
+
+.detail-overview {
+  color: #56646d;
+  line-height: 1.75;
+  margin-bottom: 8px;
+}
+
+.carousel-block-updated {
+  margin: 24px 0 36px;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.carousel-block-updated .carousel-img {
+  border-radius: 0;
+  aspect-ratio: 16 / 6;
+}
+
+.carousel-block-updated .carousel-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 24px;
+  color: #666;
+}
+
+.recommend-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rec-arrow {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dfe6ea;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+  box-shadow: none;
+  line-height: 1;
+}
+
+.rec-arrow:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.recommend-grid-5 {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  min-width: 0;
+}
+
+.btn-icon.on { color: var(--danger); border-color: var(--danger); }
+
+.spec-table-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.spec-table-head h3 { font-size: 16px; font-weight: 700; }
+
+.attr-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.attr-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.attr-switch-ui {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: #dfe6ea;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.attr-switch-ui::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.attr-switch input:checked + .attr-switch-ui { background: var(--primary); }
+.attr-switch input:checked + .attr-switch-ui::after { transform: translateX(20px); }
+
+.attr-switch-label { font-size: 13px; color: var(--text); font-weight: 500; }
+
+.spec-table.show-attr td,
+.spec-table.show-attr th { vertical-align: middle; }
+
+.attr-cell {
+  font-size: 11px;
+  line-height: 1.55;
+  color: #56646d;
+  white-space: nowrap;
+  min-width: 180px;
+}
+
+.spec-table.show-attr tbody tr { height: 72px; }
+
+.list-mode-modal-updated { width: min(1240px, 96vw); }
+
+.modal-pills { margin-bottom: 0; }
+
+.attr-group { margin-bottom: 16px; }
+.attr-group > label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.attr-options { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.attr-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: border-color 0.15s;
+}
+
+.attr-btn:hover { border-color: var(--primary); }
+.attr-btn.active { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+.attr-btn-static { cursor: default; }
+
+.attr-options-rich { gap: 10px; }
+
+.option-img { width: 56px; height: 56px; border-radius: 6px; object-fit: cover; }
+
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.qty-row > label { font-size: 13px; font-weight: 600; }
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.stepper button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #fafbfc;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.stepper input {
+  width: 56px;
+  border: none;
+  text-align: center;
+  outline: none;
+  height: 36px;
+}
+
+.stepper.small button { width: 28px; height: 28px; font-size: 14px; }
+.stepper.small input { width: 44px; height: 28px; font-size: 13px; }
+
+.qty-hint { font-size: 12px; color: var(--muted); }
+
+.detail-actions {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.detail-actions .btn-primary { flex: 1; font-size: 15px; text-transform: lowercase; }
+
+/* Detail tabs */
+.detail-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 12px 12px 0 0;
+  padding: 0 8px;
+}
+
+.detail-tabs .tab {
+  border: none;
+  background: transparent;
+  padding: 16px 20px;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.detail-tabs .tab.active {
+  color: var(--text);
+  font-weight: 600;
+  border-bottom-color: var(--primary);
+}
+
+.detail-content {
+  background: #fff;
+  border-radius: 0 0 12px 12px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+  margin-bottom: 32px;
+}
+
+.detail-content h3 { font-size: 16px; margin-bottom: 12px; }
+.detail-content p { color: #56646d; line-height: 1.7; margin-bottom: 12px; }
+.detail-content ul, .detail-content ol { padding-left: 20px; color: #56646d; margin-bottom: 16px; }
+.detail-content li { margin-bottom: 6px; }
+
+.tab-image-wrap { margin-top: 16px; border-radius: 8px; overflow: hidden; }
+.tab-content-img { width: 100%; border-radius: 8px; }
+.detail-story-img { max-height: 500px; object-fit: cover; width: 100%; }
+
+.material-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.material-card {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.material-card span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+
+.tab-empty { text-align: center; padding: 48px 20px; }
+.tab-empty-img { width: 120px; margin: 0 auto 16px; opacity: 0.6; }
+.tab-empty-text { color: var(--muted); }
+
+.install-steps { margin: 12px 0 16px; padding-left: 20px; }
+
+/* Carousel / lifestyle */
+.carousel-block {
+  margin-bottom: 40px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.recommend-section-head {
+  margin-bottom: 16px;
+}
+
+.recommend-section-head h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.recommend-section-head span { font-size: 13px; color: var(--muted); }
+
+.carousel-img {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eef1f3;
+  aspect-ratio: 16 / 7;
+}
+
+.lifestyle-img { width: 100%; height: 100%; object-fit: cover; }
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: var(--shadow);
+  color: #666;
+}
+
+.carousel-arrow:first-of-type { left: 16px; }
+.carousel-arrow:last-of-type { right: 16px; }
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--line);
+  cursor: pointer;
+}
+
+.carousel-dot.on { background: var(--primary); width: 24px; border-radius: 4px; }
+
+.recommend-section { margin-bottom: 40px; }
+.recommend-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+.tab-recommend-grid { margin-top: 16px; }
+
+/* List mode right drawer */
+.drawer-mask.list-mode-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 300;
+}
+
+.list-mode-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(920px, 78vw);
+  height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.15);
+  animation: drawerSlideIn 0.28s ease;
+}
+
+@keyframes drawerSlideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.drawer-close {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  color: #78848d;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.drawer-head {
+  padding: 24px 56px 16px 24px;
+  border-bottom: 1px solid #eef1f3;
+  flex-shrink: 0;
+}
+
+.drawer-title {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 10px 0 6px;
+  padding-right: 24px;
+}
+
+.drawer-item-id {
+  font-size: 13px;
+  color: #78848d;
+}
+
+.drawer-sale-tabs {
+  display: flex;
+  flex-shrink: 0;
+  border-bottom: 1px solid #eef1f3;
+}
+
+.drawer-sale-tab {
+  flex: 1;
+  border: none;
+  background: #f3f5f7;
+  color: #78848d;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.drawer-sale-tab.active {
+  background: #e8faf8;
+  color: #1a9e8e;
+}
+
+.drawer-spec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 12px;
+  flex-shrink: 0;
+}
+
+.drawer-spec-head h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.drawer-filter-btn {
+  border: 1px solid #dfe6ea;
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #56646d;
+  cursor: pointer;
+}
+
+.drawer-table-wrap {
+  flex: 1;
+  overflow: auto;
+  padding: 0 16px;
+  min-height: 0;
+}
+
+.drawer-spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.drawer-spec-table th {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #eef1f3;
+  font-weight: 600;
+  color: #78848d;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+}
+
+.drawer-spec-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eef1f3;
+  vertical-align: middle;
+  color: #2b3136;
+}
+
+.drawer-spec-table tr.selected-row {
+  background: #f4fcfb;
+}
+
+.drawer-spec-table .col-check {
+  width: 36px;
+  text-align: center;
+}
+
+.drawer-spec-table .col-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+}
+
+.drawer-spec-table .col-price {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.drawer-item-cell {
+  min-width: 200px;
+}
+
+.drawer-item-cell .mini-img {
+  width: 44px;
+  height: 44px;
+}
+
+.drawer-sku {
+  font-size: 12px;
+  line-height: 1.35;
+  margin-bottom: 2px;
+}
+
+.status-tag-current {
+  background: #e8f4fd;
+  color: #2b7fd4;
+  font-size: 11px;
+  padding: 1px 6px;
+}
+
+.drawer-stepper {
+  min-width: 96px;
+}
+
+.drawer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 24px;
+  border-top: 1px solid #eef1f3;
+  background: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.drawer-summary {
+  font-size: 14px;
+  color: #56646d;
+  flex: 1;
+  min-width: 0;
+}
+
+.drawer-summary-sep {
+  margin: 0 8px;
+  color: #c5cdd3;
+}
+
+.drawer-summary .red {
+  color: #e53935;
+  font-weight: 700;
+}
+
+.drawer-wishlist-btn {
+  min-width: 220px;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: lowercase;
+  flex-shrink: 0;
+}
+
+/* List mode modal (legacy) */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  width: min(1100px, 96vw);
+  max-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.list-mode-modal { width: min(1200px, 96vw); }
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg);
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.modal-head { padding: 24px 24px 12px; border-bottom: 1px solid var(--line); }
+.modal-head h2 { font-size: 20px; margin: 8px 0 4px; padding-right: 40px; }
+
+.modal-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.attr-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.attr-toggle input { accent-color: var(--primary); width: 16px; height: 16px; }
+
+.modal-table-wrap {
+  flex: 1;
+  overflow: auto;
+  padding: 0 16px;
+}
+
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.spec-table th {
+  text-align: left;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: #fff;
+}
+
+.spec-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.spec-table tr.selected-row { background: var(--primary-soft); }
+
+.item-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.mini-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #eef1f3;
+}
+
+.status-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #e8f8f5;
+  color: #1a9e8e;
+  margin-top: 4px;
+}
+
+.status-tag.danger { background: #fde8ea; color: var(--danger); }
+
+.attr-col { font-size: 11px; line-height: 1.5; color: var(--muted); white-space: nowrap; }
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid var(--line);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.modal-footer .summary { font-size: 14px; }
+.modal-footer .red { color: var(--danger); }
+.modal-footer .btn-primary { min-width: 200px; }
+
+/* Wishlist */
+.page-wishlist { padding: 32px 0 48px; }
+
+.wishlist-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.wishlist-main {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-row select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: #fff;
+}
+
+.wishlist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.wishlist-table th {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.wishlist-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.invalid-row { opacity: 0.55; }
+.opt-cell { white-space: nowrap; }
+
+.remark-row td { padding-top: 0; border-bottom: 1px solid var(--line); }
+.remark-box {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.reply { margin-top: 6px; color: var(--primary-dark); }
+
+.order-summary {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 88px;
+}
+
+.order-summary h3 { font-size: 16px; margin-bottom: 16px; }
+
+.thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.more-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 40px;
+}
+
+.summary-list { margin-bottom: 16px; }
+.summary-list div {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 13px;
+}
+
+.summary-list dt { color: var(--muted); }
+.summary-list .payable { font-weight: 700; font-size: 15px; border-bottom: none; padding-top: 12px; }
+
+/* Account pages */
+.page-account {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+  padding: 32px 0 48px;
+  align-items: start;
+}
+
+.account-sidebar {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 0;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 88px;
+}
+
+.side-item {
+  display: block;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.side-item:hover { background: var(--bg); color: var(--text); }
+.side-item.active { color: var(--primary-dark); font-weight: 600; background: var(--primary-soft); border-right: 3px solid var(--primary); }
+
+.side-group { margin-top: 8px; }
+.side-title {
+  padding: 8px 20px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.account-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.page-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+
+.status-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.status-tab {
+  border: none;
+  background: transparent;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted);
+  border-radius: 6px;
+}
+
+.status-tab.active { background: var(--primary-soft); color: var(--primary-dark); font-weight: 600; }
+
+.query-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.query-bar input, .query-bar select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 140px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.data-table.compact th, .data-table.compact td { padding: 8px 6px; font-size: 12px; }
+.action-cell { white-space: nowrap; }
+
+.po-detail-modal { width: min(960px, 96vw); }
+.row-between { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.head-meta { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+.po-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 16px 0;
+  font-size: 14px;
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 0 8px;
+}
+
+.exception-modal { padding: 24px; width: min(800px, 96vw); }
+.warn-text { color: var(--danger); margin: 12px 0 16px; font-size: 14px; }
+.rec-items { display: flex; gap: 6px; }
+
+.payment-detail-modal { width: min(800px, 96vw); padding: 24px; }
+
+.payment-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+
+.pay-stat {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.pay-stat span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.pay-stat.highlight { background: #fde8ea; }
+
+.sub-title { font-size: 15px; font-weight: 600; margin: 16px 0 10px; }
+
+.price-details { margin-bottom: 20px; }
+.price-details .price-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 13px;
+}
+
+.price-details .price-row.total { font-weight: 700; border-bottom: none; padding-top: 12px; }
+
+/* Footer */
+.footer {
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  margin-top: auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(4, 1fr);
+  gap: 32px;
+  padding: 48px 24px 32px;
+}
+
+.footer-logo .brand-en { color: var(--primary); }
+.footer-logo .brand-cn { color: var(--footer-text); }
+.footer-contact { font-weight: 600; color: #fff; margin: 16px 0 8px; }
+.globe { font-size: 20px; margin-top: 12px; }
+
+.footer-col h4 {
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.footer-col a:hover { color: var(--primary); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 16px 24px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(43, 49, 54, 0.92);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 300;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .product-grid, .home-grid, .recommend-grid { grid-template-columns: repeat(4, 1fr); }
+  .home-cats { grid-template-columns: repeat(3, 1fr); }
+  .detail-layout { grid-template-columns: 1fr; }
+  .detail-copy-grid { grid-template-columns: 1fr; }
+  .attr-table { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .header-inner { flex-wrap: wrap; gap: 12px; }
+  .main-nav { order: 3; width: 100%; justify-content: flex-start; overflow-x: auto; }
+  .page-products.with-filter { grid-template-columns: 1fr; }
+  .filter-panel { position: static; }
+  .product-grid, .recommend-grid { grid-template-columns: repeat(2, 1fr); }
+  .wishlist-layout, .page-account { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .home-promo { grid-template-columns: 1fr; }
+}
+
+  </style>
 </head>
 <body>
-  <div id="boot-banner" style="background:#4ed9cc;color:#fff;padding:14px;text-align:center;font-family:sans-serif;font-size:14px">
-    LINSY Demo 正在加载… 若超过 10 秒仍为空白，请按 Ctrl+F5
-  </div>
   <div id="app"></div>
-  <noscript>
-    <div style="padding:24px;background:#fff3cd;color:#856404;font-family:sans-serif;text-align:center">
-      请启用 JavaScript 后刷新页面。
-    </div>
-  </noscript>
   <script>
-    window.__demoLoadError = function (name) {
-      var banner = document.getElementById('boot-banner');
-      if (banner) banner.style.background = '#e53935';
-      var app = document.getElementById('app');
-      if (!app) return;
-      app.innerHTML = '<div style="padding:24px;font-family:sans-serif;max-width:560px;margin:0 auto">'
-        + '<h2 style="color:#e53935;margin-bottom:12px">Demo 加载失败</h2>'
-        + '<p>无法加载 <code>' + name + '</code></p>'
-        + '<p style="margin-top:12px;color:#56646d">请确认仓库根目录已上传全部 5 个文件：index.html、mall-trade-demo.js、mall-trade-demo.css、mall-i18n.js、.nojekyll</p>'
-        + '</div>';
+(function (global) {
+  const CNY_RATE = 7.25;
+
+  const I18N = {
+    en: {
+      hi: 'Hi, Linsytest',
+      serviceCall: 'Service call',
+      serviceEmail: 'Service email',
+      guide: 'Guide',
+      search: 'search',
+      navHome: 'Home',
+      navProducts: 'Products',
+      navWishlist: 'Wishlist',
+      navPO: 'PO',
+      navAccount: 'Account',
+      contactUs: 'Contact Us',
+      aboutLinsy: 'About LINSY',
+      investCoop: 'Investment Cooperation',
+      serviceSupport: 'Service Support',
+      legal: 'Legal',
+      featuredCategories: 'Featured Categories',
+      bestsellers: 'Bestsellers',
+      viewAll: 'View All →',
+      shopNow: 'Shop Now',
+      vrShowroom: 'VR Showroom',
+      vrDesc: 'Experience LINSY collections in immersive 3D',
+      explore: 'Explore',
+      newArrivals: 'New Arrivals',
+      newArrivalsDesc: 'Latest designs with 7-day estimated delivery',
+      browse: 'Browse',
+      filters: 'Filters',
+      label: 'Label',
+      price: 'Price',
+      moq: 'MOQ',
+      deliveryTime: 'Delivery Time',
+      productMaterial: 'Product Material',
+      productSize: 'Product Size',
+      any: 'Any',
+      listingDate: 'Listing Date',
+      sales: 'Sales',
+      hideFilters: 'Hide Filters',
+      showFilters: 'Show Filters',
+      estDel: 'Est. Del',
+      pcs: 'pcs',
+      item: 'Item',
+      stock: 'Stock',
+      custom: 'Custom',
+      variations: 'Variations',
+      listMode: 'List Mode',
+      color: 'Color',
+      size: 'Size',
+      material: 'Material',
+      style: 'Style',
+      unlabeled: 'Unlabeled',
+      qty: 'Qty',
+      addToWishlist: '+ add to wishlist',
+      description: 'Description',
+      sizeChart: 'Size Chart',
+      installation: 'Installation',
+      productManual: 'Product Manual',
+      recommend: 'Recommend',
+      overview: 'Overview',
+      sellingPoints: 'Product Selling Points',
+      sameSeries: 'Same Series',
+      sameCategory: 'Same Category',
+      status: 'Status',
+      active: 'Active',
+      installTime: 'Estimated Installation Time',
+      deliveryDate: 'Delivery Date',
+      selected: 'Selected',
+      items: 'Items',
+      totalAmount: 'Total Amount',
+      delete: 'Delete',
+      inquiry: 'Inquiry',
+      clearInvalid: 'Clear Invalid',
+      addItem: 'Add Item',
+      import: 'Import',
+      export: 'Export',
+      specification: 'Specification',
+      opt: 'Opt',
+      remark: 'Remark',
+      reply: 'Reply',
+      orderDetails: 'Order Details',
+      totalQty: 'Total Qty',
+      totalVol: 'Total Vol',
+      currency: 'Currency',
+      discount: 'Discount',
+      payable: 'Payable',
+      buyNow: 'Buy Now',
+      systemReminder: 'System Reminder',
+      exceptionWarn: 'Your wishlist contains discontinued or invalid items. Please handle them before placing order.',
+      recommended: 'Recommended For You',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+      poList: 'PO List',
+      dispatchList: 'Dispatch Note List',
+      paymentOrder: 'Payment Order',
+      searchBtn: 'Search',
+      view: 'View',
+      copy: 'Copy',
+      invalid: 'Invalid',
+      paymentRecord: 'Payment Record',
+      collectPay: 'Collect Pay',
+      batchRefund: 'Batch Refund',
+      priceDetails: 'Price Details',
+      paymentRecords: 'Payment Records',
+      close: 'Close',
+      paid: 'Paid',
+      unpaid: 'Unpaid',
+      personalCenter: 'Personal Center',
+      accountInfo: 'Account Info',
+      subAccount: 'Sub Account',
+      myOrder: 'My Order',
+      poOrder: 'PO Order',
+      dispatchNote: 'Dispatch Note',
+      paymentOrderMenu: 'Payment Order',
+      myReport: 'My Report',
+      myFavorite: 'My Favorite',
+      toastFavOn: 'Added to favorites',
+      toastFavOff: 'Removed from favorites',
+      toastWishlist: 'Added to wishlist',
+      toastBatchWishlist: 'Batch added to wishlist',
+      toastDeleted: 'Deleted',
+      toastClearInvalid: 'Invalid items cleared',
+      toastOrderCreated: 'Purchase order created',
+      toastCollectPay: 'Payment collection started',
+      current: 'Current',
+      pendingDisco: 'Pending Disco',
+      disco: 'Disco',
+      confirming: 'Confirming',
+      waitShip: 'Wait Ship',
+      waitReceive: 'Wait Receive',
+      complete: 'Complete',
+      closed: 'Closed',
+      draft: 'Draft',
+      inTransit: 'In Transit',
+      pendingShipment: 'Pending Shipment',
+      overviewDesc: 'Modern furniture piece featuring solid wood frame with premium finish. Suitable for residential and commercial projects worldwide.',
+      point1: 'Ergonomic design with premium materials',
+      point2: 'Easy assembly within {time}',
+      point3: 'Multiple color and material options',
+      more: 'more...',
+      attr: 'Attr',
+      standardAmount: 'Standard Amount',
+      discountAmount: 'Discount Amount',
+      adjustAmount: 'Adjust Amount',
+      rebateAmount: 'Rebate Amount',
+      freight: 'Freight',
+      insuranceFee: 'Insurance Fee',
+      payableAmount: 'Payable Amount',
+      paidAmount: 'Paid Amount',
+      unpaidAmount: 'Unpaid Amount',
+      dueAmt: 'Due Amt',
+      paidAmt: 'Paid Amt',
+      unpaidAmt: 'Unpaid Amt',
+      cutoffAmt: 'Cutoff Amt',
+      dueDate: 'Due Date',
+      remDays: 'Rem Days',
+      payType: 'Pay Type',
+      relOrder: 'Rel Order',
+      createTime: 'Create Time',
+      creatingDate: 'Creating date',
+      tradeTerm: 'Trade Term',
+      preparing: 'Preparing',
+      confirmed: 'Confirmed',
+      pending: 'Pending',
+      noData: 'No data found',
+      materialDesc: 'Premium solid wood frame with eco-friendly finish. Fabric meets commercial-grade durability standards.',
+      materialTitle: 'Material Details',
+      installationTitle: 'Installation Guide',
+      installStep1: 'Unpack all parts and verify against the packing list.',
+      installStep2: 'Assemble the frame according to the illustrated steps.',
+      installStep3: 'Secure all fasteners and inspect stability before use.',
+      recommendDesc: 'You may also like the following products from the same series or category.',
+    },
+    zh: {
+      hi: '您好，Linsytest',
+      serviceCall: '客服电话',
+      serviceEmail: '客服邮箱',
+      guide: '指南',
+      search: '搜索',
+      navHome: '首页',
+      navProducts: '商品',
+      navWishlist: '意向清单',
+      navPO: '采购单',
+      navAccount: '账户',
+      contactUs: '联系我们',
+      aboutLinsy: '关于林氏',
+      investCoop: '招商合作',
+      serviceSupport: '服务支持',
+      legal: '法律条款',
+      featuredCategories: '精选分类',
+      bestsellers: '畅销商品',
+      viewAll: '查看全部 →',
+      shopNow: '立即选购',
+      vrShowroom: 'VR 展厅',
+      vrDesc: '沉浸式 3D 体验林氏家居全系列',
+      explore: '进入展厅',
+      newArrivals: '新品上市',
+      newArrivalsDesc: '最新设计，预计 7 天交期',
+      browse: '浏览新品',
+      filters: '筛选',
+      label: '标签',
+      price: '价格',
+      moq: '起订量',
+      deliveryTime: '交期',
+      productMaterial: '材质',
+      productSize: '尺寸',
+      any: '不限',
+      listingDate: '上架时间',
+      sales: '销量',
+      hideFilters: '收起筛选',
+      showFilters: '展开筛选',
+      estDel: '预计交期',
+      pcs: '件',
+      item: '商品编码',
+      stock: '现货',
+      custom: '定制',
+      variations: '规格选择',
+      listMode: '列表模式',
+      color: '颜色',
+      size: '尺寸',
+      material: '材质',
+      style: '款式',
+      unlabeled: '未标注',
+      qty: '数量',
+      addToWishlist: '+ 加入意向清单',
+      description: '商品描述',
+      sizeChart: '尺寸图',
+      installation: '安装说明',
+      productManual: '产品手册',
+      recommend: '推荐',
+      overview: '概述',
+      sellingPoints: '产品卖点',
+      sameSeries: '同系列推荐',
+      sameCategory: '同类推荐',
+      status: '状态',
+      active: '在售',
+      installTime: '预计安装时长',
+      deliveryDate: '交期',
+      selected: '已选',
+      items: '项',
+      totalAmount: '总金额',
+      delete: '删除',
+      inquiry: '询价',
+      clearInvalid: '清除失效',
+      addItem: '添加商品',
+      import: '导入',
+      export: '导出',
+      specification: '规格',
+      opt: '操作',
+      remark: '备注',
+      reply: '回复',
+      orderDetails: '订单汇总',
+      totalQty: '总数量',
+      totalVol: '总体积',
+      currency: '币种',
+      discount: '优惠',
+      payable: '应付金额',
+      buyNow: '立即下单',
+      systemReminder: '系统提醒',
+      exceptionWarn: '意向清单中存在停产或失效商品，请先处理后再下单。',
+      recommended: '为您推荐',
+      cancel: '取消',
+      confirm: '确定',
+      poList: '采购单列表',
+      dispatchList: '发运单列表',
+      paymentOrder: '付款单',
+      searchBtn: '查询',
+      view: '查看',
+      copy: '复制',
+      invalid: '作废',
+      paymentRecord: '付款记录',
+      collectPay: '收款',
+      batchRefund: '批量退款',
+      priceDetails: '金额明细',
+      paymentRecords: '付款记录',
+      close: '关闭',
+      paid: '已付款',
+      unpaid: '待付款',
+      personalCenter: '个人中心',
+      accountInfo: '账户信息',
+      subAccount: '子账号',
+      myOrder: '我的订单',
+      poOrder: '采购单',
+      dispatchNote: '发运单',
+      paymentOrderMenu: '付款单',
+      myReport: '我的报表',
+      myFavorite: '我的收藏',
+      toastFavOn: '已加入收藏',
+      toastFavOff: '已取消收藏',
+      toastWishlist: '已加入意向清单',
+      toastBatchWishlist: '已批量加入意向清单',
+      toastDeleted: '已删除',
+      toastClearInvalid: '已清除失效商品',
+      toastOrderCreated: '采购订单已生成',
+      toastCollectPay: '已进入收款流程',
+      current: '正常',
+      pendingDisco: '预停产',
+      disco: '已停产',
+      confirming: '待确认',
+      waitShip: '待发运',
+      waitReceive: '待收货',
+      complete: '已完成',
+      closed: '已关闭',
+      draft: '草稿',
+      inTransit: '运输中',
+      pendingShipment: '待发货',
+      overviewDesc: '现代家具，采用优质实木框架与精工饰面，适用于住宅及商业工程项目。',
+      point1: '人体工学设计，优质材料',
+      point2: '约 {time} 即可完成安装',
+      point3: '多种颜色与材质可选',
+      more: '更多...',
+      attr: '属性',
+      standardAmount: '标准金额',
+      discountAmount: '折扣金额',
+      adjustAmount: '调整金额',
+      rebateAmount: '返利金额',
+      freight: '运费',
+      insuranceFee: '保险费',
+      payableAmount: '应付金额',
+      paidAmount: '已付金额',
+      unpaidAmount: '未付金额',
+      dueAmt: '应付金额',
+      paidAmt: '已付金额',
+      unpaidAmt: '未付金额',
+      cutoffAmt: '截止金额',
+      dueDate: '到期日',
+      remDays: '剩余天数',
+      payType: '付款方式',
+      relOrder: '关联单号',
+      createTime: '创建时间',
+      creatingDate: '创建日期',
+      tradeTerm: '贸易条款',
+      preparing: '备货中',
+      confirmed: '已确认',
+      pending: '待处理',
+      noData: '暂无数据',
+      materialDesc: '优质实木框架，环保饰面工艺，面料满足商用级耐用标准。',
+      materialTitle: '材质说明',
+      installationTitle: '安装说明',
+      installStep1: '拆开包装，按装箱单核对全部配件。',
+      installStep2: '按图示步骤组装框架结构。',
+      installStep3: '紧固所有连接件，使用前检查稳固性。',
+      recommendDesc: '您可能还喜欢以下同系列或同类商品。',
+    },
+  };
+
+  const CATEGORY_LABELS = {
+    all: { en: 'All Categories', zh: '全部分类' },
+    new: { en: 'New Arrivals', zh: '新品上市' },
+    best: { en: 'Bestsellers', zh: '畅销爆款' },
+    living: { en: 'Linsy Living', zh: '林氏生活' },
+    kids: { en: 'Kids Furniture', zh: '儿童家具' },
+    inspire: { en: 'Inspire Series', zh: '灵感系列' },
+    livingroom: { en: 'Living Room', zh: '客厅' },
+    dining: { en: 'Dining Room', zh: '餐厅' },
+    bedroom: { en: 'Bedroom', zh: '卧室' },
+    study: { en: 'Study', zh: '书房' },
+  };
+
+  const PRODUCT_NAMES = {
+    en: [
+      'Oxygen Wood Grain Sintered Stone Dining Table',
+      'Purus Wood Color Dining Chair (Set of 2)',
+      'Nordic Fabric Accent Sofa 3-Seater',
+      'Minimalist Oak Bed Frame Queen Size',
+      'Scandinavian Round Coffee Table',
+      'Kids Cloud Bunk Bed with Storage',
+      'Modern LED TV Console Cabinet',
+      'Velvet Upholstered Dining Bench',
+      'Extendable Walnut Dining Table',
+      'Linen Sectional Sofa with Chaise',
+    ],
+    zh: [
+      '氧气木纹岩板餐桌',
+      'Purus 木色餐椅（两把装）',
+      '北欧布艺三人沙发',
+      '极简橡木大床架',
+      '北欧圆形茶几',
+      '儿童云朵双层床（带储物）',
+      '现代 LED 电视柜',
+      '丝绒软包餐凳',
+      '可伸缩胡桃木餐桌',
+      '亚麻转角沙发',
+    ],
+  };
+
+  const BANNER_TEXT = [
+    { title: { en: 'Linsy Living Collection', zh: '林氏生活系列' }, sub: { en: 'Modern furniture solutions for global distributors', zh: '为全球经销商提供现代家居解决方案' } },
+    { title: { en: 'New Arrivals 2026', zh: '2026 新品上市' }, sub: { en: 'Explore bestselling dining & bedroom series', zh: '探索畅销餐厅与卧室系列' } },
+    { title: { en: 'Stock Ready · 7-Day Delivery', zh: '现货供应 · 7 天交期' }, sub: { en: 'Bulk order with MOQ from 5 pcs', zh: '最低 5 件起订，支持批量采购' } },
+    { title: { en: 'Inspire Series', zh: '灵感系列' }, sub: { en: 'Premium upholstery for residential projects', zh: '高端软体，适配住宅工程项目' } },
+  ];
+
+  function getLocale(state) {
+    return state.locale === 'zh' ? 'zh' : 'en';
+  }
+
+  function t(state, key, vars) {
+    const loc = getLocale(state);
+    let text = I18N[loc][key] ?? I18N.en[key] ?? key;
+    if (vars) {
+      Object.keys(vars).forEach((k) => {
+        text = text.replace(`{${k}}`, vars[k]);
+      });
+    }
+    return text;
+  }
+
+  function catName(state, id) {
+    return CATEGORY_LABELS[id]?.[getLocale(state)] ?? id;
+  }
+
+  function productName(state, index) {
+    const loc = getLocale(state);
+    return PRODUCT_NAMES[loc][index % PRODUCT_NAMES[loc].length];
+  }
+
+  function bannerText(state, index, field) {
+    return BANNER_TEXT[index]?.[field]?.[getLocale(state)] ?? '';
+  }
+
+  function statusText(state, status) {
+    const map = {
+      Active: 'active',
+      Current: 'current',
+      Invalid: 'invalid',
+      'Pending Disco': 'pendingDisco',
+      Disco: 'disco',
+      'Pending Shipment': 'pendingShipment',
+      Confirming: 'confirming',
+      Unpaid: 'unpaid',
+      Paid: 'paid',
+      'Wait Ship': 'waitShip',
+      Complete: 'complete',
+      Closed: 'closed',
+      Draft: 'draft',
+      'In Transit': 'inTransit',
+      Preparing: 'preparing',
+      Confirmed: 'confirmed',
+      Pending: 'pending',
     };
-    window.addEventListener('error', function (e) {
-      var banner = document.getElementById('boot-banner');
-      if (banner) banner.style.background = '#e53935';
-      var app = document.getElementById('app');
-      if (app && !app.querySelector('.topbar')) {
-        app.innerHTML = '<pre style="padding:24px;color:#e53935;white-space:pre-wrap;font-family:sans-serif">'
-          + 'JS Error: ' + e.message + '\n' + (e.filename || '') + ':' + (e.lineno || '') + '</pre>';
+    const key = map[status];
+    return key ? t(state, key) : status;
+  }
+
+  function convertAmount(state, usd) {
+    return state.currency === 'CNY' ? usd * CNY_RATE : usd;
+  }
+
+  function money(state, usd, short) {
+    const amount = convertAmount(state, usd);
+    if (state.currency === 'CNY') {
+      return short ? `¥ ${amount.toFixed(2)}` : `¥ ${amount.toFixed(2)} CNY`;
+    }
+    return short ? `$ ${amount.toFixed(2)}` : `$ ${amount.toFixed(2)} USD`;
+  }
+
+  function currencyCode(state) {
+    return state.currency;
+  }
+
+  function langLabel(state) {
+    return state.locale === 'zh' ? '中文' : 'English';
+  }
+
+  function renderTopbarSwitchers(state) {
+    const langOpen = state.openDropdown === 'lang';
+    const curOpen = state.openDropdown === 'currency';
+    return `
+      <div class="topbar-tools">
+        <div class="switch-wrap">
+          <button class="switch-btn" data-toggle-dropdown="lang">${langLabel(state)} ▾</button>
+          <div class="switch-menu ${langOpen ? 'open' : ''}">
+            <button class="switch-option ${state.locale === 'en' ? 'active' : ''}" data-set-locale="en">English</button>
+            <button class="switch-option ${state.locale === 'zh' ? 'active' : ''}" data-set-locale="zh">中文</button>
+          </div>
+        </div>
+        <span class="sep">|</span>
+        <div class="switch-wrap">
+          <button class="switch-btn" data-toggle-dropdown="currency">${state.currency} ▾</button>
+          <div class="switch-menu ${curOpen ? 'open' : ''}">
+            <button class="switch-option ${state.currency === 'USD' ? 'active' : ''}" data-set-currency="USD">USD</button>
+            <button class="switch-option ${state.currency === 'CNY' ? 'active' : ''}" data-set-currency="CNY">CNY</button>
+          </div>
+        </div>
+        <span class="sep">|</span>
+        <span class="guide">📖 ${t(state, 'guide')}</span>
+      </div>
+    `;
+  }
+
+  function loadPrefs(state) {
+    try {
+      const loc = localStorage.getItem('mall_locale');
+      const cur = localStorage.getItem('mall_currency');
+      if (loc === 'en' || loc === 'zh') state.locale = loc;
+      if (cur === 'USD' || cur === 'CNY') state.currency = cur;
+    } catch (e) { /* ignore */ }
+  }
+
+  function savePrefs(state) {
+    try {
+      localStorage.setItem('mall_locale', state.locale);
+      localStorage.setItem('mall_currency', state.currency);
+    } catch (e) { /* ignore */ }
+  }
+
+  global.MallI18n = {
+    CNY_RATE,
+    t,
+    catName,
+    productName,
+    bannerText,
+    statusText,
+    convertAmount,
+    money,
+    currencyCode,
+    langLabel,
+    renderTopbarSwitchers,
+    loadPrefs,
+    savePrefs,
+  };
+})(window);
+
+  </script>
+  <script>
+(function () {
+  const DEFAULT_EMPTY_IMG = 'https://www.linsydirect.com/paas/b2b-cli-pc/static/img/img_default.d0c2369.jpg';
+  const DETAIL_TABS = ['description', 'sizeChart', 'material', 'installation', 'recommend'];
+
+  const FURNITURE_IMAGES = [
+    'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1617806117938-529d34949e8f?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1617103996701-966ffc08c9b0?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=480&h=480&fit=crop',
+    'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=480&h=480&fit=crop',
+  ];
+
+  const HOME_BANNERS = [
+    {
+      img: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1400&h=480&fit=crop',
+      title: 'Linsy Living Collection',
+      sub: 'Modern furniture solutions for global distributors',
+      link: 'products',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1617806117938-529d34949e8f?w=1400&h=480&fit=crop',
+      title: 'New Arrivals 2026',
+      sub: 'Explore bestselling dining & bedroom series',
+      link: 'products',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1400&h=480&fit=crop',
+      title: 'Stock Ready · 7-Day Delivery',
+      sub: 'Bulk order with MOQ from 5 pcs',
+      link: 'wishlist',
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1400&h=480&fit=crop',
+      title: 'Inspire Series',
+      sub: 'Premium upholstery for residential projects',
+      link: 'products',
+    },
+  ];
+
+  const PRODUCT_NAMES = [
+    'Oxygen Wood Grain Sintered Stone Dining Table',
+    'Purus Wood Color Dining Chair (Set of 2)',
+    'Nordic Fabric Accent Sofa 3-Seater',
+    'Minimalist Oak Bed Frame Queen Size',
+    'Scandinavian Round Coffee Table',
+    'Kids Cloud Bunk Bed with Storage',
+    'Modern LED TV Console Cabinet',
+    'Velvet Upholstered Dining Bench',
+    'Extendable Walnut Dining Table',
+    'Linen Sectional Sofa with Chaise',
+  ];
+
+  const CATEGORIES = [
+    { id: 'all', name: 'All Categories', img: FURNITURE_IMAGES[0] },
+    { id: 'new', name: 'New Arrivals', img: FURNITURE_IMAGES[1] },
+    { id: 'best', name: 'Bestsellers', img: FURNITURE_IMAGES[2] },
+    { id: 'living', name: 'Linsy Living', img: FURNITURE_IMAGES[3] },
+    { id: 'kids', name: 'Kids Furniture', img: FURNITURE_IMAGES[5] },
+    { id: 'inspire', name: 'Inspire Series', img: FURNITURE_IMAGES[4] },
+    { id: 'livingroom', name: 'Living Room', img: FURNITURE_IMAGES[6] },
+    { id: 'dining', name: 'Dining Room', img: FURNITURE_IMAGES[7] },
+    { id: 'bedroom', name: 'Bedroom', img: FURNITURE_IMAGES[8] },
+    { id: 'study', name: 'Study', img: FURNITURE_IMAGES[9] },
+  ];
+
+  function buildListModeRows(count = 24) {
+    const colors = ['Vintage + Black', 'Vintage + Green', 'Vintage + Soft Yarn', 'Vintage + Cream White'];
+    const sizes = ['2.37m', '2.72m', '3.02m'];
+    const materials = ['Oak', 'Black Walnut', 'Soft Yarn'];
+    const prices = [458, 1458, 458, 1458, 450, 45000, 458, 1458];
+    return Array.from({ length: count }, (_, i) => ({
+      id: `sku${i + 1}`,
+      item: `G064-A-LSC25SF04768${i}`,
+      image: FURNITURE_IMAGES[i % FURNITURE_IMAGES.length],
+      color: colors[i % colors.length],
+      size: sizes[i % sizes.length],
+      material: materials[i % materials.length],
+      price: prices[i % prices.length],
+      estDel: '7days',
+      stock: 1000,
+      moq: 5,
+      qty: i === 0 ? 9999 : 0,
+      checked: i === 0,
+      code: 'Current',
+    }));
+  }
+
+  const UNLABELED = '__UNLABELED__';
+  const UNLABELED_LABEL = '—';
+  const SPEC_DIM_ORDER = ['color', 'size', 'material'];
+  const SPEC_STATE_KEYS = { color: 'selectedColor', size: 'selectedSize', material: 'selectedMaterial' };
+
+  function buildDetailSkus() {
+    const base = {
+      price: 78.56,
+      estDel: '7days',
+      stock: 1000,
+      moq: 5,
+      qty: 0,
+      checked: false,
+      code: 'Current',
+    };
+    return [
+      { ...base, id: 'sku1', skuCode: 'G064-A-LSC25SF047681', item: 'G064-A-LSC25SF047681', image: FURNITURE_IMAGES[0], color: 'Vintage + Black', size: '2.37m', material: 'Oak' },
+      { ...base, id: 'sku2', skuCode: 'G064-A-LSC25SF047682', item: 'G064-A-LSC25SF047682', image: FURNITURE_IMAGES[1], color: 'Vintage + Black', size: '2.37m', material: 'Oak', price: 82.5 },
+      { ...base, id: 'sku3', skuCode: 'G064-A-LSC25SF047683', item: 'G064-A-LSC25SF047683', image: FURNITURE_IMAGES[2], color: 'Vintage + Green', size: '2.72m', material: 'Black Walnut' },
+      { ...base, id: 'sku4', skuCode: 'G064-A-LSC25SF047684', item: 'G064-A-LSC25SF047684', image: FURNITURE_IMAGES[3], color: 'Vintage + Soft Yarn', size: '3.02m', material: 'Oak' },
+      { ...base, id: 'sku5', skuCode: 'G064-A-LSC25SF047685', item: 'G064-A-LSC25SF047685', image: FURNITURE_IMAGES[4], color: '', size: '2.72m', material: '' },
+      { ...base, id: 'sku6', skuCode: 'G064-A-LSC25SF047686', item: 'G064-A-LSC25SF047686', image: FURNITURE_IMAGES[5], color: '', size: '', material: '' },
+    ];
+  }
+
+  function normSpecValue(value) {
+    const text = (value || '').trim();
+    return text || UNLABELED;
+  }
+
+  function isSpecValueEmpty(value) {
+    return !(value || '').trim();
+  }
+
+  function specValueLabel(value) {
+    return value === UNLABELED ? UNLABELED_LABEL : value;
+  }
+
+  function getSpecPresetOrder(p, key) {
+    if (key === 'color') {
+      return (p?.colors || []).map((option) => (typeof option === 'string' ? option : option.label));
+    }
+    if (key === 'size') return p?.sizes || [];
+    if (key === 'material') return p?.materials || [];
+    return [];
+  }
+
+  function getSkuCode(sku) {
+    return sku?.skuCode || sku?.item || '';
+  }
+
+  function escAttr(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;');
+  }
+
+  function getProductSkus(p) {
+    return p?.specRows || state.listModeRows || [];
+  }
+
+  function isDimVisible(skus, key) {
+    return skus.some((sku) => !isSpecValueEmpty(sku[key]));
+  }
+
+  function getVisibleDims(skus) {
+    return {
+      color: isDimVisible(skus, 'color'),
+      size: isDimVisible(skus, 'size'),
+      material: isDimVisible(skus, 'material'),
+    };
+  }
+
+  function getSpecDimOptions(skus, key, p) {
+    if (!isDimVisible(skus, key)) return [];
+    const values = Array.from(new Set(skus.map((sku) => normSpecValue(sku[key]))));
+    const preset = getSpecPresetOrder(p, key);
+    return values.sort((a, b) => {
+      if (a === UNLABELED) return 1;
+      if (b === UNLABELED) return -1;
+      const ai = preset.indexOf(a);
+      const bi = preset.indexOf(b);
+      if (ai !== -1 || bi !== -1) return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+      return a.localeCompare(b, 'zh-CN');
+    });
+  }
+
+  function buildSpecFilters(state, visible, overrides = {}) {
+    const filters = { ...overrides };
+    if (visible.color && state.selectedColor != null && filters.color === undefined) filters.color = state.selectedColor;
+    if (visible.size && state.selectedSize != null && filters.size === undefined) filters.size = state.selectedSize;
+    if (visible.material && state.selectedMaterial != null && filters.material === undefined) filters.material = state.selectedMaterial;
+    if (state.selectedStyleSkuId != null && filters.skuId === undefined) filters.skuId = state.selectedStyleSkuId;
+    return filters;
+  }
+
+  function getCandidateSkus(skus, filters = {}) {
+    return skus.filter((sku) => {
+      if (filters.color != null && normSpecValue(sku.color) !== filters.color) return false;
+      if (filters.size != null && normSpecValue(sku.size) !== filters.size) return false;
+      if (filters.material != null && normSpecValue(sku.material) !== filters.material) return false;
+      if (filters.skuId != null && sku.id !== filters.skuId) return false;
+      return true;
+    });
+  }
+
+  function getBaseCandidateSkus(skus, state, visible) {
+    const filters = buildSpecFilters(state, visible);
+    delete filters.skuId;
+    return getCandidateSkus(skus, filters);
+  }
+
+  function isSpecOptionSelectable(skus, state, visible, dimKey, dimValue) {
+    const filters = buildSpecFilters(state, visible);
+    delete filters.skuId;
+    filters[dimKey] = dimValue;
+    return getCandidateSkus(skus, filters).length > 0;
+  }
+
+  function isBaseSpecComplete(visible, state) {
+    return (!visible.color || state.selectedColor != null)
+      && (!visible.size || state.selectedSize != null)
+      && (!visible.material || state.selectedMaterial != null);
+  }
+
+  function shouldShowStyleDim(skus, visible, state) {
+    const allBaseHidden = !visible.color && !visible.size && !visible.material;
+    if (allBaseHidden) return skus.length > 1;
+    if (!isBaseSpecComplete(visible, state)) return false;
+    return getBaseCandidateSkus(skus, state, visible).length > 1;
+  }
+
+  function getStyleOptions(skus, visible, state) {
+    const allBaseHidden = !visible.color && !visible.size && !visible.material;
+    if (allBaseHidden) return skus;
+    if (!isBaseSpecComplete(visible, state)) return [];
+    return getBaseCandidateSkus(skus, state, visible);
+  }
+
+  function sanitizeSpecSelections(state, skus, visible, p) {
+    if (!visible.color) state.selectedColor = null;
+    if (!visible.size) state.selectedSize = null;
+    if (!visible.material) state.selectedMaterial = null;
+    SPEC_DIM_ORDER.forEach((key) => {
+      if (!visible[key]) return;
+      const stateKey = SPEC_STATE_KEYS[key];
+      const options = getSpecDimOptions(skus, key, p);
+      if (state[stateKey] != null && !options.includes(state[stateKey])) state[stateKey] = null;
+    });
+    const candidates = getBaseCandidateSkus(skus, state, visible);
+    if (state.selectedStyleSkuId && !candidates.some((sku) => sku.id === state.selectedStyleSkuId)) {
+      state.selectedStyleSkuId = null;
+    }
+  }
+
+  function clearDownstreamSpecSelections(state, changedKey) {
+    const idx = SPEC_DIM_ORDER.indexOf(changedKey);
+    if (idx < 0) return;
+    for (let i = idx + 1; i < SPEC_DIM_ORDER.length; i++) {
+      state[SPEC_STATE_KEYS[SPEC_DIM_ORDER[i]]] = null;
+    }
+    state.selectedStyleSkuId = null;
+    state.resolvedSkuId = null;
+  }
+
+  function onSpecDimSelect(state, dimKey, value) {
+    state[SPEC_STATE_KEYS[dimKey]] = value;
+    clearDownstreamSpecSelections(state, dimKey);
+  }
+
+  function resetSkuSelection(state) {
+    state.selectedColor = null;
+    state.selectedSize = null;
+    state.selectedMaterial = null;
+    state.selectedStyleSkuId = null;
+    state.resolvedSkuId = null;
+  }
+
+  function resolveSelectedSku(state, p) {
+    const skus = getProductSkus(p);
+    const visible = getVisibleDims(skus);
+    const allBaseHidden = !visible.color && !visible.size && !visible.material;
+
+    sanitizeSpecSelections(state, skus, visible, p);
+
+    if (allBaseHidden) {
+      if (skus.length === 1) {
+        state.selectedStyleSkuId = skus[0].id;
+        state.resolvedSkuId = skus[0].id;
+        return skus[0];
+      }
+      const picked = state.selectedStyleSkuId ? skus.find((sku) => sku.id === state.selectedStyleSkuId) : null;
+      state.resolvedSkuId = picked?.id || null;
+      return picked || null;
+    }
+
+    if (!isBaseSpecComplete(visible, state)) {
+      state.selectedStyleSkuId = null;
+      state.resolvedSkuId = null;
+      return null;
+    }
+
+    const candidates = getBaseCandidateSkus(skus, state, visible);
+
+    if (candidates.length === 1) {
+      state.selectedStyleSkuId = candidates[0].id;
+      state.resolvedSkuId = candidates[0].id;
+      return candidates[0];
+    }
+
+    if (candidates.length > 1) {
+      if (state.selectedStyleSkuId) {
+        const picked = candidates.find((sku) => sku.id === state.selectedStyleSkuId);
+        if (picked) {
+          state.resolvedSkuId = picked.id;
+          return picked;
+        }
+        state.selectedStyleSkuId = null;
+      }
+      state.resolvedSkuId = null;
+      return null;
+    }
+
+    state.selectedStyleSkuId = null;
+    state.resolvedSkuId = null;
+    return null;
+  }
+
+  function getColorImgForValue(p, value) {
+    if (value === UNLABELED) return p.gallery?.[0] || p.image || DEFAULT_EMPTY_IMG;
+    const options = (p.colors || []).map((option) => (typeof option === 'string' ? { label: option, img: p.gallery?.[0] } : option));
+    const found = options.find((option) => option.label === value);
+    return found?.img || p.gallery?.[0] || p.image || DEFAULT_EMPTY_IMG;
+  }
+
+  function buildVariationSpecUI(p) {
+    const skus = getProductSkus(p);
+    const visible = getVisibleDims(skus);
+    const resolvedSku = resolveSelectedSku(state, p);
+    const showStyle = shouldShowStyleDim(skus, visible, state);
+    const styleOptions = getStyleOptions(skus, visible, state);
+
+    const renderDimOptions = (key) => {
+      if (!visible[key]) return '';
+      const options = getSpecDimOptions(skus, key, p);
+      const stateKey = SPEC_STATE_KEYS[key];
+      const dataKey = key === 'color' ? 'spec-color' : key === 'size' ? 'spec-size' : 'spec-material';
+      const buttons = options.map((value) => {
+        const active = state[stateKey] === value;
+        const disabled = !isSpecOptionSelectable(skus, state, visible, key, value);
+        const label = specValueLabel(value);
+        if (key === 'color' && value === UNLABELED) {
+          return `<button type="button" class="attr-btn attr-btn-chip attr-btn-unlabeled ${active ? 'active' : ''} ${disabled ? 'is-disabled' : ''}" data-${dataKey}="${escAttr(value)}" ${disabled ? 'disabled' : ''}>${UNLABELED_LABEL}</button>`;
+        }
+        if (key === 'color') {
+          return `<button type="button" class="attr-btn attr-btn-inline ${active ? 'active' : ''} ${disabled ? 'is-disabled' : ''}" data-${dataKey}="${escAttr(value)}" ${disabled ? 'disabled' : ''}><img src="${getColorImgForValue(p, value)}" alt="" class="option-img-sm" /><span>${label}</span></button>`;
+        }
+        return `<button type="button" class="attr-btn attr-btn-chip ${value === UNLABELED ? 'attr-btn-unlabeled' : ''} ${active ? 'active' : ''} ${disabled ? 'is-disabled' : ''}" data-${dataKey}="${escAttr(value)}" ${disabled ? 'disabled' : ''}>${label}</button>`;
+      }).join('');
+      return `
+        <div class="attr-group">
+          <label>${tx(key)}</label>
+          <div class="attr-options ${key === 'color' ? 'attr-options-inline' : ''}">${buttons}</div>
+        </div>
+      `;
+    };
+
+    const styleHtml = showStyle ? `
+      <div class="attr-group attr-group-style">
+        <label>${tx('style')}</label>
+        <div class="attr-options">
+          ${styleOptions.map((sku) => {
+            const active = state.selectedStyleSkuId === sku.id;
+            return `<button type="button" class="attr-btn attr-btn-chip ${active ? 'active' : ''}" data-style-sku="${escAttr(sku.id)}">${getSkuCode(sku)}</button>`;
+          }).join('')}
+        </div>
+      </div>
+    ` : '';
+
+    return {
+      html: `${renderDimOptions('color')}${renderDimOptions('size')}${renderDimOptions('material')}${styleHtml}`,
+      resolvedSku,
+      visible,
+    };
+  }
+
+  const DETAIL_PRODUCT_DATA = {
+    displayName: 'Purus Wood Color + White Dining Chair (Set of 2)',
+    goodsName: 'Purus Wood Color + White Dining Chair (Set of 2)',
+    item: 'LS387S7-LSC23YZ007597',
+    goodsNo: 'LS387S7',
+    skuNo: 'LSC23YZ007597',
+    price: 78.56,
+    strikePrice: 98.00,
+    estDel: '7d',
+    moq: 5,
+    customMoq: 50,
+    stock: 1000,
+    tag: 'Bestsellers',
+    status: 'Active',
+    statusCode: 'onSale',
+    countsLimit: 0,
+    preStopProd: 1,
+    category: 'dining',
+    images: 12,
+    image: FURNITURE_IMAGES[0],
+    gallery: [
+      FURNITURE_IMAGES[0],
+      FURNITURE_IMAGES[1],
+      FURNITURE_IMAGES[2],
+      FURNITURE_IMAGES[3],
+      FURNITURE_IMAGES[4],
+      FURNITURE_IMAGES[5],
+    ],
+    lifestyleGallery: [
+      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&h=760&fit=crop',
+      'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&h=760&fit=crop',
+      'https://images.unsplash.com/photo-1617806117938-529d34949e8f?w=1200&h=760&fit=crop',
+      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&h=760&fit=crop',
+      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&h=760&fit=crop',
+    ],
+    favorited: true,
+    colors: [
+      { label: 'Vintage + Black', img: FURNITURE_IMAGES[0] },
+      { label: 'Vintage + Green', img: FURNITURE_IMAGES[3] },
+      { label: 'Vintage + Soft Yarn', img: FURNITURE_IMAGES[5] },
+      { label: 'Vintage + Cream White', img: FURNITURE_IMAGES[7] },
+    ],
+    sizes: ['2.37m', '2.72m', '3.02m'],
+    materials: ['Oak', 'Black Walnut'],
+    dim: '1023mm(L) × 366mm(W) × 1098mm(H)',
+    cbm: '0.154m³',
+    gw: '46.3kg',
+    goodsOneweight: '46.3kg',
+    goodsProperty3: 'To be advised',
+    pricesetCurrency: 'USD',
+    pricesetCurrency1: 'CNY',
+    skuName: 'Vintage + Black / 2.37m / Oak',
+    skuRemark: 'length1:1023mm, width1:366mm, height1:1098mm',
+    installTime: '40 minutes',
+    deliveryDate: '7 days',
+    tradeNote: 'Stock item ready for mixed container procurement',
+    tabsData: {
+      description: {
+        overview: 'This upgraded detail page is designed around SKU-level trading information so overseas distributors can complete selection, evaluate delivery support and add items to wishlist faster.',
+        sellingPoints: [
+          'Unified hero area for gallery, status, price, delivery support and MOQ.',
+          'Supports stock and custom purchase logic with different MOQ display.',
+          'Provides list mode for bulk SKU selection and rapid wishlist accumulation.',
+          'Structured tabs separate material, size chart and installation guidance for desktop and H5 consistency.',
+        ],
+        attributes: [
+          ['Brand', 'LINSY'],
+          ['Style', 'LINSY'],
+          ['Coll.', 'Purus Dining'],
+          ['Item', 'LS387S7-LSC23YZ007597'],
+          ['Cat.', 'Dining Room'],
+          ['Model', 'LS387S7'],
+          ['Discontinued', 'On Sale'],
+          ['Electric', 'NO'],
+          ['For', 'Indoor / Distribution'],
+          ['Plug Spec', ''],
+          ['Volt. Freq.', ''],
+          ['Input Volt.', ''],
+        ],
+        longImage: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1400&h=900&fit=crop',
+      },
+      sizeChart: {
+        image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=760&fit=crop',
+        note: 'Size chart module focuses on packaged size and distribution-friendly data reading.',
+      },
+      material: {
+        text: 'Material content is structured to clarify core material, finish and export attribute explanation instead of relying only on long images.',
+        cards: [
+          { title: 'Main Material', value: 'Oak / Black Walnut' },
+          { title: 'Surface Finish', value: 'Wood color + white upholstery' },
+          { title: 'Support Logic', value: 'SKU-level DIM / CBM / G.W. structured display' },
+        ],
+        image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&h=760&fit=crop',
+      },
+      installation: {
+        steps: [
+          'Unpack the chair set and verify all hardware against the packing list.',
+          'Assemble the seat base and tighten screws in sequence to ensure stability.',
+          'Confirm finish, upholstery and wobble tolerance before shipment or retail dispatch.',
+        ],
+        image: 'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=1200&h=760&fit=crop',
+      },
+      productManual: {
+        text: 'Product manual and assembly guide for distributor onboarding and after-sales support.',
+        image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&h=760&fit=crop',
+      },
+    },
+    specRows: buildDetailSkus(),
+  };
+
+  const PRODUCTS = Array.from({ length: 20 }, (_, i) => {
+    const imgIdx = i % FURNITURE_IMAGES.length;
+    return {
+      id: `p${i + 1}`,
+      nameIndex: i % 10,
+      item: `LSC25ZH07589${i}`,
+      price: 78.56 + i * 2.3,
+      estDel: '7d',
+      moq: 5,
+      stock: 1000,
+      tag: i % 3 === 0 ? 'Bestsellers' : '',
+      status: 'Active',
+      category: ['living', 'dining', 'bedroom'][i % 3],
+      images: 12,
+      image: FURNITURE_IMAGES[imgIdx],
+      gallery: [
+        FURNITURE_IMAGES[imgIdx],
+        FURNITURE_IMAGES[(imgIdx + 1) % FURNITURE_IMAGES.length],
+        FURNITURE_IMAGES[(imgIdx + 2) % FURNITURE_IMAGES.length],
+        FURNITURE_IMAGES[(imgIdx + 3) % FURNITURE_IMAGES.length],
+        FURNITURE_IMAGES[(imgIdx + 4) % FURNITURE_IMAGES.length],
+      ],
+      favorited: i % 5 === 0,
+      colors: ['Vintage + Black', 'Vintage + Green', 'Vintage + Cream White'],
+      sizes: ['2.37ft', '2.72ft', '3.02ft'],
+      materials: ['Oak', 'Black Walnut'],
+      dim: '47.24" x 27.56" x 29.53"',
+      cbm: '0.31m³',
+      gw: '45.2kg',
+      installTime: '40 mins',
+      deliveryDate: '7 days',
+    };
+  });
+
+  Object.assign(PRODUCTS[0], DETAIL_PRODUCT_DATA);
+
+  const LIST_MODE_ROWS = buildListModeRows(24);
+
+  const WISHLIST = [
+    { id: 'w1', item: 'G064-A-LSC255F047688', image: FURNITURE_IMAGES[0], spec: { col: 'Vintage + Black', sz: '2.37m', mat: 'Oak' }, up: 358.08, qty: 10, moq: 5, stock: 1000, estDel: '7days', status: 'Current', remark: 'Please ship together with PO-20260411', reply: 'Noted, we will arrange consolidated shipment.' },
+    { id: 'w2', item: 'G064-A-LSC255F047689', image: FURNITURE_IMAGES[2], spec: { col: 'Vintage + Green', sz: '2.72m', mat: 'Oak' }, up: 420.5, qty: 8, moq: 5, stock: 800, estDel: '7days', status: 'Current', remark: '', reply: '' },
+    { id: 'w3', item: 'G064-A-LSC255F047690', image: FURNITURE_IMAGES[4], spec: { col: 'Vintage + Cream White', sz: '3.02m', mat: 'Black Walnut' }, up: 512.0, qty: 5, moq: 5, stock: 500, estDel: '15days', status: 'Current', remark: '', reply: '' },
+    { id: 'w4', item: 'G064-A-LSC255F047691', image: FURNITURE_IMAGES[6], spec: { col: 'Vintage + Soft Yarn', sz: '2.37m', mat: 'Oak' }, up: 298.0, qty: 12, moq: 5, stock: 1200, estDel: '7days', status: 'Invalid', remark: '', reply: '' },
+    { id: 'w5', item: 'G064-A-LSC255F047692', image: FURNITURE_IMAGES[8], spec: { col: 'Vintage + Black', sz: '2.72m', mat: 'Black Walnut' }, up: 680.0, qty: 6, moq: 5, stock: 300, estDel: '7days', status: 'Pending Disco', remark: '', reply: '' },
+  ];
+
+  const PO_LIST = Array.from({ length: 8 }, (_, i) => ({
+    poNo: `PO26041100${100 + i}`,
+    cpoNo: `CPO-2026-${1000 + i}`,
+    status: ['Pending Shipment', 'Confirming', 'Unpaid', 'Wait Ship'][i % 4],
+    currency: 'USD',
+    created: '04/11/2026',
+    qty: 58 + i * 3,
+    amount: 2563.0 + i * 120,
+    remarks: i % 2 === 0 ? 'Urgent' : '',
+    tradeTerm: 'FOB',
+  }));
+
+  const DISPATCH_LIST = Array.from({ length: 10 }, (_, i) => ({
+    no: i + 1,
+    dispatchNo: `FYD26041102427${i}`,
+    status: 'Pending Shipment',
+    lsPiNo: `L2604113613${i}`,
+    custPoNo: `CPO-2026-${1000 + i}`,
+    entry1: `ENT-${2000 + i}`,
+    entry2: `ENT-${3000 + i}`,
+    planQty: '58Pcs/58Pcs',
+    planDate: '04/11/2026',
+    actualDate: i % 3 === 0 ? '04/12/2026' : '-',
+  }));
+
+  const PAYMENT_LIST = Array.from({ length: 8 }, (_, i) => ({
+    payNo: `FKD2604112391${i}`,
+    status: i % 3 === 0 ? 'Paid' : 'Unpaid',
+    dueAmt: 365.58 + i * 50,
+    paidAmt: i % 3 === 0 ? 365.58 + i * 50 : 65.58,
+    unpaidAmt: i % 3 === 0 ? 0 : 300.0 + i * 50,
+    cutoffAmt: 365.58 + i * 50,
+    dueDate: '05/30/2026',
+    remDays: '30day',
+    payType: 'TT',
+    relOrder: `PO26041100${100 + i}`,
+    createTime: '04/11/2026',
+    standardAmt: 320.0 + i * 40,
+    discountAmt: 20.0,
+    adjustAmt: 0,
+    rebateAmt: 15.0,
+    freight: 35.58,
+    insurance: 5.0,
+    payableAmt: 365.58 + i * 50,
+    paidRecord: 65.58,
+  }));
+
+  const state = {
+    route: 'index',
+    routeParam: null,
+    category: 'all',
+    showFilter: true,
+    sort: 'sales',
+    page: 2,
+    homeSlide: 0,
+    detailThumb: 0,
+    lifestyleSlide: 0,
+    wishlist: WISHLIST.map((w) => ({ ...w, selected: w.status === 'Current' })),
+    favorites: new Set(PRODUCTS.filter((p) => p.favorited).map((p) => p.id)),
+    detailProduct: PRODUCTS[0],
+    detailMode: 'variations',
+    saleType: 'stock',
+    selectedColor: null,
+    selectedSize: null,
+    selectedMaterial: null,
+    selectedStyleSkuId: null,
+    resolvedSkuId: null,
+    detailQty: 0,
+    recSeriesSlide: 0,
+    recCatSlide1: 0,
+    recCatSlide2: 0,
+    listModeOpen: false,
+    listDrawerSaleType: 'stock',
+    listModeRows: buildListModeRows(24).map((r) => ({ ...r })),
+    showAttr: true,
+    poTab: 'confirming',
+    dispatchTab: 'transit',
+    paymentTab: 'unpaid',
+    accountPage: 'po',
+    modal: null,
+    paymentDetail: null,
+    toast: null,
+    homeTimer: null,
+    locale: 'en',
+    currency: 'USD',
+    openDropdown: null,
+    detailTab: 'description',
+  };
+
+  const { t, catName, productName, bannerText, statusText, money, convertAmount, currencyCode, renderTopbarSwitchers, loadPrefs, savePrefs } = MallI18n;
+  loadPrefs(state);
+
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  const tx = (key, vars) => t(state, key, vars);
+  const fmt = (usd, short) => money(state, usd, short);
+  const fmtTablePrice = (usd) => `$${convertAmount(state, usd).toFixed(2)}`;
+  const fmtPriceSplit = (usd) => {
+    const amount = convertAmount(state, usd);
+    const [intPart, decPart] = amount.toFixed(2).split('.');
+    const ccy = state.currency === 'CNY' ? 'CNY' : 'USD';
+    const sym = state.currency === 'CNY' ? '¥' : '$';
+    return `<span class="price-sym">${sym}</span><span class="price-int">${intPart}</span><span class="price-dec">.${decPart}</span><span class="price-ccy">${ccy}</span>`;
+  };
+  const tabLabel = (id) => tx({ waitship: 'waitShip', waitrecv: 'waitReceive', transit: 'inTransit' }[id] || id);
+
+  function img(src, cls, alt) {
+    return `<img class="${cls}" src="${src}" alt="${alt || 'product'}" loading="lazy" />`;
+  }
+
+  function miniImg(src, alt) {
+    return img(src, 'mini-img', alt);
+  }
+
+  function showToast(msg) {
+    clearTimeout(state.toastTimer);
+    let el = $('#toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'toast';
+      el.className = 'toast';
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add('show');
+    state.toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  function parseRoute() {
+    const hash = location.hash.replace(/^#\/?/, '') || 'index';
+    const parts = hash.split('/');
+    state.route = parts[0] || 'index';
+    state.routeParam = parts[1] || null;
+    if (state.route === 'home') state.route = 'index';
+    if (state.route === 'detail' && state.routeParam) {
+      const p = PRODUCTS.find((x) => x.id === state.routeParam);
+      if (p && state.detailProduct?.id !== p.id) {
+        state.detailProduct = p;
+        state.detailThumb = 0;
+        state.lifestyleSlide = 0;
+        state.detailTab = 'description';
+        state.listModeRows = (p.specRows || LIST_MODE_ROWS).map((row) => ({ ...row }));
+        resetSkuSelection(state);
+      } else if (p) {
+        state.detailProduct = p;
+        state.listModeRows = (p.specRows || LIST_MODE_ROWS).map((row) => ({ ...row }));
+      }
+    }
+    if (state.route === 'account') {
+      state.accountPage = state.routeParam || 'po';
+    }
+  }
+
+  function navigate(route, param) {
+    location.hash = param ? `#/${route}/${param}` : `#/${route}`;
+  }
+
+  function renderShell(contentHtml) {
+    const wishCount = state.wishlist.filter((w) => w.status === 'Current').length;
+    const navActive = (name) => {
+      const map = {
+        index: ['index'],
+        products: ['products', 'detail'],
+        wishlist: ['wishlist'],
+        account: ['account'],
+      };
+      return map[name]?.includes(state.route) ? 'active' : '';
+    };
+
+    return `
+      <div class="topbar">
+        <div class="container topbar-inner">
+          <div class="topbar-left">
+            <span class="user-greet">${tx('hi')} <span class="icon-exit" title="Logout">↗</span></span>
+          </div>
+          <div class="topbar-right-group">
+            <span class="service-info">${tx('serviceCall')}: 0757-81299699 &nbsp;|&nbsp; ${tx('serviceEmail')}: franchise@linsy.com</span>
+            ${renderTopbarSwitchers(state)}
+          </div>
+        </div>
+      </div>
+      <header class="header">
+        <div class="container header-inner">
+          <div class="brand brand-logo" data-nav="index">
+            <span class="brand-en">LINSY</span><span class="brand-cn">林氏</span>
+          </div>
+          <nav class="main-nav">
+            <a href="#/index" class="nav-link ${navActive('index') ? 'active' : ''}">${tx('navHome')}</a>
+            <a href="#/products" class="nav-link ${navActive('products') ? 'active' : ''}">${tx('navProducts')} <span class="arrow">▼</span></a>
+            <a href="#/wishlist" class="nav-link ${navActive('wishlist') ? 'active' : ''}">${tx('navWishlist')}${wishCount ? `<span class="badge">${wishCount}</span>` : ''}</a>
+            <a href="#/account/po" class="nav-link ${state.route === 'account' && state.accountPage === 'po' ? 'active' : ''}">${tx('navPO')}</a>
+            <a href="#/account/po" class="nav-link ${navActive('account') ? 'active' : ''}">${tx('navAccount')}</a>
+          </nav>
+          <div class="search-box">
+            <input type="text" placeholder="${tx('search')}" />
+            <button type="button" class="search-btn" aria-label="Search">🔍</button>
+          </div>
+        </div>
+      </header>
+      <main class="main">${contentHtml}</main>
+      <footer class="footer">
+        <div class="container footer-grid">
+          <div class="footer-brand">
+            <div class="brand footer-logo"><span class="brand-en">LINSY</span><span class="brand-cn">林氏</span></div>
+            <div class="footer-contact">Contact Us</div>
+            <div>0757-81299039</div>
+            <div class="globe">🌐</div>
+          </div>
+          <div class="footer-col"><h4>About LINSY</h4><a>Brand Story</a><a>Why Choose Us</a><a>Company News</a><a>Contact Us</a></div>
+          <div class="footer-col"><h4>Investment Cooperation</h4><a>Apply to Be a Distributor</a><a>Global Outlets</a><a>Our Strengths</a></div>
+          <div class="footer-col"><h4>Service Support</h4><a>Warranty Service</a><a>Packaging Service</a><a>Delivery Service</a><a>VR Showroom</a><a>FAQS</a></div>
+          <div class="footer-col"><h4>Legal</h4><a>Terms & Conditions</a><a>Privacy Policy</a><a>Terms of Use</a><a>Dispute Resolution Process</a></div>
+        </div>
+        <div class="footer-bottom">FOSHAN LINSY HOME CO., LTD &nbsp;|&nbsp; 粤ICP备xxxxxxx号 &nbsp;|&nbsp; linsydirect.com</div>
+      </footer>
+    `;
+  }
+
+  function pName(p) {
+    return p.displayName || p.goodsName || productName(state, p.nameIndex ?? 0);
+  }
+
+  function getProductTabData(p) {
+    if (p.tabsData) return p.tabsData;
+    const idx = p.nameIndex ?? 0;
+    return {
+      sizeChart: idx % 3 === 0 ? 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&h=560&fit=crop' : null,
+      material: idx % 2 === 0 ? {
+        text: tx('materialDesc'),
+        image: FURNITURE_IMAGES[(idx + 2) % FURNITURE_IMAGES.length],
+      } : null,
+      installation: idx % 4 === 0 ? {
+        steps: [tx('installStep1'), tx('installStep2'), tx('installStep3')],
+        image: 'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=900&h=560&fit=crop',
+      } : null,
+    };
+  }
+
+  function getSellStatus(product) {
+    if (product.countsLimit === 1 || product.statusCode === 'discontinued') return 'Discontinued';
+    if (product.countsLimit === 0 && product.preStopProd === 0 || product.statusCode === 'preStop') return 'Pre-discontinue';
+    return 'On Sale';
+  }
+
+  function getCurrentSku(product) {
+    const color = product.colors?.[state.selectedColor];
+    const size = product.sizes?.[state.selectedSize];
+    const material = product.materials?.[state.selectedMaterial];
+    return {
+      color: typeof color === 'string' ? color : color?.label,
+      size,
+      material,
+      otherAttr: product.otherAttrs?.[0] || '-',
+    };
+  }
+
+  function getDetailRecommendations(product, type) {
+    const pool = PRODUCTS.filter((p) => p.id !== product.id);
+    if (type === 'series') return pool.slice(0, 5);
+    if (type === 'category') return pool.filter((p) => p.category === product.category).slice(0, 5);
+    return pool.slice(0, 5);
+  }
+
+  function renderSpecAttrTable(rows, cols = 4) {
+    return `
+      <div class="spec-attr-table spec-attr-table-inline" style="--attr-cols:${cols}">
+        ${rows.map(([k, v]) => `
+          <div class="spec-attr-cell-inline"><span class="spec-attr-label">${k}:</span> <span class="spec-attr-val">${v || ''}</span></div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderRecommendCard(p) {
+    const fav = state.favorites.has(p.id);
+    const name = pName(p);
+    const shortName = name.length > 30 ? `${name.slice(0, 27)}...` : name;
+    const estDel = String(p.estDel || '7d').replace(/days?$/i, 'd');
+    return `
+      <article class="product-card recommend-card recommend-card-ref" data-detail="${p.id}">
+        <div class="card-img">
+          ${img(p.image, 'product-img', name)}
+          <div class="thumb-dots">
+            ${p.gallery.slice(0, 3).map((t) => `<img class="dot-img" src="${t}" alt="" />`).join('')}
+            <span class="more">+${p.images || 12}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="rec-title-row">
+            <h3 class="card-title card-title-single">${shortName}</h3>
+            <button type="button" class="rec-fav-btn ${fav ? 'on' : ''}" data-fav="${p.id}" aria-label="favorite">♡</button>
+          </div>
+          <div class="card-price-split">${fmtPriceSplit(p.price)}</div>
+          <div class="card-meta-row">
+            <span>${tx('estDel')}: ${estDel}</span>
+            <span>${tx('moq')}: ${p.moq} ${tx('pcs')}</span>
+          </div>
+          <div class="card-item-row">${tx('item')} : ${p.item}</div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderRecommendCarousel(title, products, slideKey) {
+    const slide = state[slideKey] || 0;
+    const maxStart = Math.max(0, products.length - 5);
+    const offset = Math.min(slide, maxStart);
+    const visible = products.slice(offset, offset + 5);
+    return `
+      <section class="recommend-section recommend-section-ref">
+        <div class="recommend-section-head"><h3>${title}</h3></div>
+        <div class="recommend-carousel">
+          <button class="rec-arrow prev" data-rec-slide="${slideKey}" data-dir="prev" ${offset <= 0 ? 'disabled' : ''}>‹</button>
+          <div class="recommend-grid recommend-grid-5">${visible.map(renderRecommendCard).join('')}</div>
+          <button class="rec-arrow next" data-rec-slide="${slideKey}" data-dir="next" ${offset >= maxStart ? 'disabled' : ''}>›</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderTabEmpty() {
+    return `
+      <div class="tab-empty">
+        ${img(DEFAULT_EMPTY_IMG, 'tab-empty-img', tx('noData'))}
+        <p class="tab-empty-text">${tx('noData')}</p>
+      </div>
+    `;
+  }
+
+  function renderDetailTabPanel(p) {
+    const tab = state.detailTab;
+    const tabData = getProductTabData(p);
+
+    if (tab === 'description') {
+      const desc = tabData.description || {};
+      const sellingPoints = desc.sellingPoints || [tx('point1'), tx('point2', { time: p.installTime }), tx('point3')];
+      const attributes = desc.attributes || [
+        ['Brand', 'LINSY'], ['Style', 'LINSY'], ['Coll.', 'Purus Dining'], ['Item', p.item],
+        ['Cat.', 'Dining Room'], ['Model', 'LS387S7'], ['Discontinued', 'On Sale'], ['Electric', 'NO'],
+        ['For', 'Indoor / Distribution'], ['Plug Spec', ''], ['Volt. Freq.', ''], ['Input Volt.', ''],
+      ];
+      return `
+        <div class="detail-desc-unified">
+          <h3 class="detail-block-title">${tx('overview')}</h3>
+          <p class="detail-overview">${desc.overview || tx('overviewDesc')}</p>
+          <h3 class="detail-block-title">${tx('sellingPoints')}</h3>
+          <ul class="selling-points-list">${sellingPoints.map((point) => `<li>${point}</li>`).join('')}</ul>
+          <h3 class="detail-block-title">Attributes</h3>
+          ${renderSpecAttrTable(attributes)}
+        </div>
+      `;
+    }
+
+    if (tab === 'sizeChart') {
+      if (!tabData.sizeChart?.image && !tabData.sizeChart) return renderTabEmpty();
+      return `
+        <h3>${tx('sizeChart')}</h3>
+        ${tabData.sizeChart.note ? `<p>${tabData.sizeChart.note}</p>` : ''}
+        <div class="tab-image-wrap">${img(tabData.sizeChart.image || tabData.sizeChart, 'tab-content-img', tx('sizeChart'))}</div>
+      `;
+    }
+
+    if (tab === 'material') {
+      if (!tabData.material) return renderTabEmpty();
+      return `
+        <h3>${tx('materialTitle')}</h3>
+        <p>${tabData.material.text}</p>
+        ${tabData.material.cards ? `<div class="material-card-grid">${tabData.material.cards.map((card) => `<div class="material-card"><span>${card.title}</span><strong>${card.value}</strong></div>`).join('')}</div>` : ''}
+        <div class="tab-image-wrap">${img(tabData.material.image, 'tab-content-img', tx('material'))}</div>
+      `;
+    }
+
+    if (tab === 'installation') {
+      if (!tabData.installation) return renderTabEmpty();
+      return `
+        <h3>${tx('installationTitle')}</h3>
+        <ol class="install-steps">${tabData.installation.steps.map((s) => `<li>${s}</li>`).join('')}</ol>
+        <div class="tab-image-wrap">${img(tabData.installation.image, 'tab-content-img', tx('installation'))}</div>
+      `;
+    }
+
+    if (tab === 'recommend') {
+      const sameSeries = getDetailRecommendations(p, 'series');
+      const sameCategory = getDetailRecommendations(p, 'category');
+      return `
+        <div class="detail-recommend-tab">
+          <h3>${tx('recommend')}</h3>
+          <p class="detail-overview">${tx('recommendDesc')}</p>
+          ${renderRecommendCarousel(tx('sameSeries'), sameSeries, 'recSeriesSlide')}
+          ${renderRecommendCarousel(tx('sameCategory'), sameCategory, 'recCatSlide1')}
+          ${renderRecommendCarousel(tx('sameCategory'), sameCategory, 'recCatSlide2')}
+        </div>
+      `;
+    }
+
+    return renderTabEmpty();
+  }
+
+  function renderHomePage() {
+    return renderShell(`
+      <section class="hero-carousel">
+        <div class="hero-track" style="transform:translateX(-${state.homeSlide * 100}%)">
+          ${HOME_BANNERS.map((b, i) => `
+            <div class="hero-slide">
+              ${img(b.img, 'hero-img', bannerText(state, i, 'title'))}
+              <div class="hero-overlay">
+                <h2>${bannerText(state, i, 'title')}</h2>
+                <p>${bannerText(state, i, 'sub')}</p>
+                <button class="btn-primary" data-hero-link="${b.link}">${tx('shopNow')}</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <button class="hero-arrow prev" data-hero-slide="prev">‹</button>
+        <button class="hero-arrow next" data-hero-slide="next">›</button>
+        <div class="hero-dots">
+          ${HOME_BANNERS.map((_, i) => `<button class="hero-dot ${state.homeSlide === i ? 'on' : ''}" data-hero-dot="${i}"></button>`).join('')}
+        </div>
+      </section>
+      <div class="container home-section">
+        <h2 class="section-title">${tx('featuredCategories')}</h2>
+        <div class="home-cats">
+          ${CATEGORIES.slice(1, 7).map((c) => `
+            <a href="#/products" class="home-cat-card" data-cat-jump="${c.id}">
+              ${img(c.img, 'home-cat-img', catName(state, c.id))}
+              <span>${catName(state, c.id)}</span>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+      <div class="container home-section">
+        <div class="section-head">
+          <h2 class="section-title">${tx('bestsellers')}</h2>
+          <a href="#/products" class="link-btn">${tx('viewAll')}</a>
+        </div>
+        <div class="product-grid home-grid">${PRODUCTS.slice(0, 10).map(renderProductCard).join('')}</div>
+      </div>
+      <div class="container home-promo">
+        <div class="promo-card">
+          ${img('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&h=360&fit=crop', 'promo-img', tx('vrShowroom'))}
+          <div><h3>${tx('vrShowroom')}</h3><p>${tx('vrDesc')}</p><button class="btn-ghost" data-nav="products">${tx('explore')}</button></div>
+        </div>
+        <div class="promo-card">
+          ${img('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&h=360&fit=crop', 'promo-img', tx('newArrivals'))}
+          <div><h3>${tx('newArrivals')}</h3><p>${tx('newArrivalsDesc')}</p><button class="btn-ghost" data-nav="products">${tx('browse')}</button></div>
+        </div>
+      </div>
+    `);
+  }
+
+  function renderCategoryBar() {
+    return `
+      <div class="category-bar">
+        <div class="container category-scroll">
+          ${CATEGORIES.map((c) => `
+            <button class="cat-item ${state.category === c.id ? 'active' : ''}" data-cat="${c.id}">
+              ${img(c.img, 'cat-img', catName(state, c.id))}
+              <span>${catName(state, c.id)}</span>
+            </button>
+          `).join('')}
+          <button class="cat-arrow">›</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderProductCard(p) {
+    const fav = state.favorites.has(p.id);
+    const thumbs = p.gallery.slice(0, 3);
+    const name = pName(p);
+    return `
+      <article class="product-card" data-detail="${p.id}">
+        <div class="card-img">
+          ${img(p.image, 'product-img', name)}
+          <div class="thumb-dots">
+            ${thumbs.map((t) => `<img class="dot-img" src="${t}" alt="" />`).join('')}
+            <span class="more">+${p.images}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-title-row">
+            <h3 class="card-title">${name}</h3>
+            <button class="fav-btn ${fav ? 'on' : ''}" data-fav="${p.id}" title="fav">♡</button>
+          </div>
+          <div class="card-price">${fmt(p.price)}</div>
+          <div class="card-meta">
+            <span>${tx('estDel')}: ${p.estDel}</span>
+            <span>${tx('moq')}: ${p.moq} ${tx('pcs')}</span>
+            <span>${tx('item')}: ${p.item}</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderFilters() {
+    if (!state.showFilter) return '';
+    return `
+      <aside class="filter-panel">
+        <div class="filter-head">Filters (3) <button class="link-btn" data-action="reset-filter">🗑</button></div>
+        <section class="filter-block"><h4>Label</h4><div class="chip-group"><button class="chip active">New Arrivals</button><button class="chip">Bestsellers</button></div></section>
+        <section class="filter-block"><h4>Price</h4><div class="range-bar"><div class="range-fill"></div></div><div class="chip-group"><button class="chip active">Any</button><button class="chip">$0-$100</button><button class="chip">$101-$500</button><button class="chip">$501-$1000</button></div></section>
+        <section class="filter-block"><h4>MOQ</h4><div class="chip-group wrap"><button class="chip active">Any</button><button class="chip">1 Pieces</button><button class="chip">5 Pieces</button><button class="chip">10 Pieces</button><button class="chip">50 Pieces</button><button class="chip">100 Pieces</button></div></section>
+        <section class="filter-block"><h4>Delivery Time</h4><div class="chip-group wrap"><button class="chip active">Any</button><button class="chip">7 days</button><button class="chip">15 days</button><button class="chip">30 days</button><button class="chip">Over 30 days</button></div></section>
+        <section class="filter-block"><h4>Product Material</h4><label class="check"><input type="checkbox" checked /> Any Material</label><label class="check"><input type="checkbox" /> Wood</label><label class="check"><input type="checkbox" /> Metal</label><label class="check"><input type="checkbox" /> Fabric</label></section>
+        <section class="filter-block"><h4>Product Size</h4><label class="check"><input type="checkbox" checked /> Any Size</label><label class="check"><input type="checkbox" /> Small</label><label class="check"><input type="checkbox" /> Medium</label><label class="check"><input type="checkbox" /> Large</label></section>
+      </aside>
+    `;
+  }
+
+  function renderPagination() {
+    const pages = [1, 2, 3, '...', 17];
+    return `
+      <div class="pagination">
+        <button class="page-btn" data-page="prev">‹</button>
+        ${pages.map((p) => typeof p === 'number'
+    ? `<button class="page-btn ${state.page === p ? 'active' : ''}" data-page="${p}">${p}</button>`
+    : `<span class="page-ellipsis">${p}</span>`).join('')}
+        <button class="page-btn" data-page="next">›</button>
+      </div>
+    `;
+  }
+
+  function renderProductsPage() {
+    const filtered = state.category === 'all' ? PRODUCTS : PRODUCTS.filter((p) => p.category === state.category);
+    return renderShell(`
+      ${renderCategoryBar()}
+      <div class="container page-products ${state.showFilter ? 'with-filter' : ''}">
+        ${renderFilters()}
+        <section class="product-area">
+          <div class="sort-bar">
+            <button class="sort-item ${state.sort === 'date' ? 'active' : ''}" data-sort="date">${tx('listingDate')} ↑</button>
+            <button class="sort-item ${state.sort === 'price' ? 'active' : ''}" data-sort="price">${tx('price')} ↑</button>
+            <button class="sort-item ${state.sort === 'delivery' ? 'active' : ''}" data-sort="delivery">${tx('deliveryTime')} ↑</button>
+            <button class="sort-item ${state.sort === 'sales' ? 'active' : ''}" data-sort="sales">${tx('sales')} ↑</button>
+            <button class="toggle-filter link-btn" data-action="toggle-filter">${state.showFilter ? tx('hideFilters') : tx('showFilters')}</button>
+          </div>
+          <div class="product-grid">${filtered.map(renderProductCard).join('')}</div>
+          ${renderPagination()}
+        </section>
+      </div>
+    `);
+  }
+
+  function renderDetailPage() {
+    return renderDetailPageV2();
+  }
+
+  function renderListModeModal() {
+    const rows = state.listModeRows;
+    const selected = rows.filter((r) => r.checked && r.qty > 0);
+    const totalPcs = selected.reduce((s, r) => s + r.qty, 0);
+    const totalAmt = selected.reduce((s, r) => s + r.price * r.qty, 0);
+    const renderAttrCell = (r) => (state.showAttr
+      ? `<td class="attr-cell">${r.dim}<br/>${r.cbm}<br/>${r.gw}</td>`
+      : '');
+
+    return `
+      <div class="modal-mask" data-action="close-list-mode">
+        <div class="modal list-mode-modal" onclick="event.stopPropagation()">
+          <button class="modal-close" data-action="close-list-mode">×</button>
+          <div class="modal-head">
+            <span class="tag-badge">Bestsellers</span>
+            <h2>Purus Wood Color + White Dining Chair (Set of 2)</h2>
+            <div class="detail-meta">Item: LS38797-LSC23YZ007597</div>
+          </div>
+          <div class="modal-toolbar">
+            <div class="sale-type"><button class="pill active">Stock</button><button class="pill">Custom</button></div>
+            <label class="attr-toggle"><input type="checkbox" id="attrToggle" ${state.showAttr ? 'checked' : ''} /> ${tx('attr')}</label>
+          </div>
+          <div class="modal-table-wrap">
+            <table class="spec-table">
+              <thead><tr><th></th><th>Item</th><th>Color</th><th>Size</th><th>Material</th>${state.showAttr ? '<th>Attr</th>' : ''}<th>Price</th><th>Est. Del</th><th>Stock</th><th>MOQ</th><th>Qty</th></tr></thead>
+              <tbody>
+                ${rows.map((r) => `
+                  <tr class="${r.checked ? 'selected-row' : ''}">
+                    <td><input type="checkbox" data-row-check="${r.id}" ${r.checked ? 'checked' : ''} /></td>
+                    <td><div class="item-cell">${miniImg(r.image, r.item)}<div><div>${r.item}</div><span class="status-tag">Current</span></div></div></td>
+                    <td>${r.color}</td><td>${r.size}</td><td>${r.material}</td>
+                    ${renderAttrCell(r)}
+                    <td>${fmt(r.price, true)}</td>
+                    <td>${r.estDel}</td><td>${r.stock}pcs</td><td>${r.moq}pcs</td>
+                    <td><div class="stepper small"><button data-row-qty="${r.id}" data-delta="-1">-</button><input value="${r.qty}" data-row-input="${r.id}" /><button data-row-qty="${r.id}" data-delta="1">+</button></div></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <div class="summary">${tx('selected')}: <b>${selected.length}</b> ${tx('items')}, <b>${totalPcs}</b> ${tx('pcs')} | ${tx('totalAmount')}: <b class="red">${fmt(totalAmt)}</b></div>
+            <button class="btn-primary" data-action="batch-add-wishlist">${tx('addToWishlist')}</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderDetailPageV2() {
+    const p = state.detailProduct;
+    const name = pName(p);
+    const mainImg = p.gallery[state.detailThumb] || p.image;
+    const lifestyleImgs = p.lifestyleGallery || p.gallery.concat(FURNITURE_IMAGES.slice(0, 3));
+    const lifestyleImg = lifestyleImgs[state.lifestyleSlide % lifestyleImgs.length];
+    const stockMoq = state.saleType === 'custom' ? (p.customMoq || p.moq) : p.moq;
+    const sameSeries = getDetailRecommendations(p, 'series');
+    const sameCategory = getDetailRecommendations(p, 'category');
+    const specUI = buildVariationSpecUI(p);
+    const activeSku = specUI.resolvedSku;
+    const displayPrice = activeSku?.price ?? p.price;
+    const displayStock = activeSku?.stock ?? p.stock;
+    const displayItem = activeSku ? getSkuCode(activeSku) : p.item;
+
+    return renderShell(`
+      <div class="container page-detail detail-v2">
+        <div class="detail-hero detail-layout detail-layout-updated">
+          <div class="detail-gallery">
+            <div class="thumb-list">
+              ${p.gallery.map((g, i) => `
+                <button class="thumb ${state.detailThumb === i ? 'active' : ''}" data-detail-thumb="${i}">
+                  ${img(g, 'thumb-img', name)}
+                </button>
+              `).join('')}
+            </div>
+            <div class="main-image">
+              <button class="detail-image-nav prev" data-detail-slide="prev" aria-label="Previous image">‹</button>
+              ${img(mainImg, 'detail-main-img', name)}
+              <button class="detail-image-nav next" data-detail-slide="next" aria-label="Next image">›</button>
+            </div>
+          </div>
+          <div class="detail-info detail-info-updated">
+            ${p.tag ? `<span class="tag-badge">${tx('bestsellers')}</span>` : ''}
+            <h1 class="detail-title">${name}</h1>
+            <div class="detail-meta detail-code-row">${tx('item')}: ${displayItem} <span class="detail-divider">|</span> ${tx('status')}: ${p.status || 'Active'}</div>
+            <div class="sale-type sale-type-split ${state.saleType === 'custom' ? 'is-custom' : ''}">
+              <button class="pill ${state.saleType === 'stock' ? 'active' : ''}" data-sale="stock">${tx('stock')}</button>
+              <button class="pill ${state.saleType === 'custom' ? 'active' : ''}" data-sale="custom">${tx('custom')}</button>
+            </div>
+            <div class="detail-price-wrap">
+              <div class="detail-price detail-price-usd">${fmt(displayPrice)}</div>
+            </div>
+            <div class="logistics detail-logistics-wrap">
+              <div class="detail-logistics-line detail-logistics-row">
+                <span><span class="logistics-ico">⏱</span> ${tx('installTime')}: ${p.installTime}</span>
+                <span class="logistics-sep">|</span>
+                <span><span class="logistics-ico">🚚</span> ${tx('deliveryDate')}: ${p.deliveryDate}</span>
+              </div>
+              <div class="detail-logistics-line detail-logistics-row">
+                <span><span class="logistics-ico">📐</span> DIM : ${p.dim.replace(/ × /g, '*')}</span>
+                <span class="logistics-sep">|</span>
+                <span><span class="logistics-ico">📦</span> CBM : ${p.cbm}</span>
+                <span class="logistics-sep">|</span>
+                <span><span class="logistics-ico">⚖</span> G.W.: ${p.gw}</span>
+              </div>
+            </div>
+            <div class="mode-tabs">
+              <button class="mode-tab ${state.detailMode === 'variations' ? 'active' : ''}" data-mode="variations">${tx('variations')}</button>
+              <button class="mode-tab ${state.detailMode === 'list' ? 'active' : ''}" data-mode="list">${tx('listMode')}</button>
+            </div>
+            ${state.detailMode === 'variations' ? `
+              ${specUI.html}
+              <div class="qty-row qty-row-ref">
+                <div class="qty-row-main">
+                  <label>${tx('qty')}</label>
+                  <div class="qty-row-controls">
+                    <div class="stepper"><button data-qty="-1">-</button><input type="number" value="${state.detailQty}" id="detailQtyInput" min="0" /><button data-qty="1">+</button></div>
+                    <span class="qty-hint">${tx('moq')}: ${stockMoq} ${tx('pcs')} | ${tx('stock')}: ${displayStock.toLocaleString()} ${tx('pcs')}</span>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+            <div class="detail-actions detail-actions-ref">
+              <button class="btn-primary btn-wishlist" data-action="add-wishlist">${tx('addToWishlist')}</button>
+              <button class="btn-icon btn-fav ${state.favorites.has(p.id) ? 'on' : ''}" data-action="toggle-fav-detail" aria-label="favorite">&#9825;</button>
+            </div>
+          </div>
+        </div>
+        <div class="detail-panel-card">
+          <div class="detail-tabs detail-tabs-ref">
+            ${DETAIL_TABS.map((tab) => `
+              <button type="button" class="tab ${state.detailTab === tab ? 'active' : ''}" data-detail-tab="${tab}">${tx(tab)}</button>
+            `).join('')}
+          </div>
+          <div class="detail-content detail-content-ref">
+            ${renderDetailTabPanel(p)}
+          </div>
+          ${state.detailTab === 'description' ? `
+          <div class="carousel-block carousel-block-ref">
+            <div class="carousel-img">
+              <button type="button" class="carousel-arrow" data-lifestyle-slide="prev" aria-label="Previous">‹</button>
+              ${img(lifestyleImg, 'lifestyle-img', 'Lifestyle')}
+              <button type="button" class="carousel-arrow" data-lifestyle-slide="next" aria-label="Next">›</button>
+              <div class="carousel-dots carousel-dots-overlay">
+                ${lifestyleImgs.slice(0, 4).map((_, i) => `<button type="button" class="carousel-dot ${state.lifestyleSlide % lifestyleImgs.length === i ? 'on' : ''}" data-lifestyle-dot="${i}"></button>`).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="detail-recommend-block">
+            ${renderRecommendCarousel(tx('sameSeries'), sameSeries, 'recSeriesSlide')}
+            ${renderRecommendCarousel(tx('sameCategory'), sameCategory, 'recCatSlide1')}
+            ${renderRecommendCarousel(tx('sameCategory'), sameCategory, 'recCatSlide2')}
+          </div>
+          ` : ''}
+        </div>
+      </div>
+      ${state.listModeOpen ? renderListModeDrawer() : ''}
+    `);
+  }
+
+  function renderListModeDrawer() {
+    const p = state.detailProduct;
+    const rows = state.listModeRows;
+    const selected = rows.filter((r) => r.checked && r.qty > 0);
+    const totalPcs = selected.reduce((s, r) => s + r.qty, 0);
+    const totalAmt = selected.reduce((s, r) => s + r.price * r.qty, 0);
+    const drawerStock = state.listDrawerSaleType === 'stock';
+
+    return `
+      <div class="drawer-mask list-mode-mask" data-action="close-list-mode">
+        <aside class="list-mode-drawer" onclick="event.stopPropagation()">
+          <button class="drawer-close" type="button" data-action="close-list-mode" aria-label="Close">×</button>
+          <div class="drawer-head">
+            <span class="tag-badge">${p.tag || 'Bestsellers'}</span>
+            <h2 class="drawer-title">${pName(p)}</h2>
+            <div class="drawer-item-id">Item: ${p.item}</div>
+          </div>
+          <div class="drawer-sale-tabs">
+            <button type="button" class="drawer-sale-tab ${drawerStock ? 'active' : ''}" data-drawer-sale="stock">${tx('stock')}</button>
+            <button type="button" class="drawer-sale-tab ${!drawerStock ? 'active' : ''}" data-drawer-sale="custom">${tx('custom')}</button>
+          </div>
+          <div class="drawer-spec-head">
+            <h3>Specification</h3>
+            <button type="button" class="drawer-filter-btn">Any ▾</button>
+          </div>
+          <div class="drawer-table-wrap">
+            <table class="spec-table drawer-spec-table">
+              <thead>
+                <tr>
+                  <th class="col-check"></th>
+                  <th>Item</th>
+                  <th>Color</th>
+                  <th>Size</th>
+                  <th>Material</th>
+                  <th>Price</th>
+                  <th>Est. Del</th>
+                  <th>Stock</th>
+                  <th>MOQ</th>
+                  <th>Qty</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.map((r) => `
+                  <tr class="${r.checked ? 'selected-row' : ''}">
+                    <td class="col-check"><input type="checkbox" data-row-check="${r.id}" ${r.checked ? 'checked' : ''} /></td>
+                    <td>
+                      <div class="item-cell drawer-item-cell">
+                        ${miniImg(r.image, r.item)}
+                        <div>
+                          <div class="drawer-sku">${r.item}</div>
+                          <span class="status-tag status-tag-current">${r.code || 'Current'}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>${r.color}</td>
+                    <td>${r.size}</td>
+                    <td>${r.material}</td>
+                    <td class="col-price">${fmtTablePrice(r.price)}</td>
+                    <td>${r.estDel}</td>
+                    <td>${r.stock}pcs</td>
+                    <td>${r.moq}pcs</td>
+                    <td>
+                      <div class="stepper small drawer-stepper">
+                        <button type="button" data-row-qty="${r.id}" data-delta="-1">-</button>
+                        <input value="${r.qty}" data-row-input="${r.id}" />
+                        <button type="button" data-row-qty="${r.id}" data-delta="1">+</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div class="drawer-footer">
+            <div class="drawer-summary">
+              ${tx('selected')}: <b>${selected.length}</b> ${tx('items')}, <b>${totalPcs.toLocaleString()}</b> ${tx('pcs')}
+              <span class="drawer-summary-sep">|</span>
+              ${tx('totalAmount')}: <b class="red">${fmtTablePrice(totalAmt)}</b>
+            </div>
+            <button type="button" class="btn-primary drawer-wishlist-btn" data-action="batch-add-wishlist">${tx('addToWishlist')}</button>
+          </div>
+        </aside>
+      </div>
+    `;
+  }
+
+  function renderWishlistPage() {
+    const selected = state.wishlist.filter((w) => w.selected && w.status === 'Current');
+    const totalQty = selected.reduce((s, w) => s + w.qty, 0);
+    const totalAmt = selected.reduce((s, w) => s + w.up * w.qty, 0);
+    const discount = selected.length ? 100 : 0;
+    const payable = totalAmt - discount;
+
+    return renderShell(`
+      <div class="container page-wishlist">
+        <div class="wishlist-layout">
+          <div class="wishlist-main">
+            <div class="action-bar">
+              <button class="link-btn" data-wl="delete">${tx('delete')}</button>
+              <button class="link-btn">${tx('inquiry')}</button>
+              <button class="link-btn" data-wl="clear-invalid">${tx('clearInvalid')}</button>
+              <button class="link-btn">${tx('addItem')} ▼</button>
+              <button class="link-btn">${tx('import')}</button>
+              <button class="link-btn">${tx('export')}</button>
+            </div>
+            <div class="filter-row">
+              <select><option>All</option></select>
+              <select><option>Products Status</option><option>Current</option><option>Invalid</option></select>
+              <div class="search-box small"><input placeholder="Item" /><button aria-label="Search">🔍</button></div>
+            </div>
+            <table class="wishlist-table">
+              <thead><tr><th></th><th>${tx('item')}</th><th>${tx('specification')}</th><th>${tx('price')}</th><th>${tx('estDel')}</th><th>${tx('qty')}</th><th>${tx('opt')}</th></tr></thead>
+              <tbody>
+                ${state.wishlist.map((w) => `
+                  <tr class="${w.status !== 'Current' ? 'invalid-row' : ''}">
+                    <td><input type="checkbox" data-wl-check="${w.id}" ${w.selected ? 'checked' : ''} ${w.status !== 'Current' ? 'disabled' : ''} /></td>
+                    <td><div class="item-cell">${miniImg(w.image, w.item)}<div><div>${w.item}</div><span class="status-tag ${w.status === 'Invalid' ? 'danger' : ''}">${statusText(state, w.status)}</span></div></div></td>
+                    <td>Col: ${w.spec.col}<br/>Sz: ${w.spec.sz}<br/>Mat: ${w.spec.mat}</td>
+                    <td>UP: ${fmt(w.up, true)}<br/>Tot: ${fmt(w.up * w.qty, true)}</td>
+                    <td>${w.estDel}</td>
+                    <td><div class="stepper small"><button data-wl-qty="${w.id}" data-delta="-1">-</button><input value="${w.qty}" data-wl-input="${w.id}" /><button data-wl-qty="${w.id}" data-delta="1">+</button></div><div class="qty-hint">${tx('moq')}: ${w.moq}${tx('pcs')} | ${tx('stock')}: ${w.stock.toLocaleString()}${tx('pcs')}</div></td>
+                    <td class="opt-cell"><button class="link-btn" data-wl-remark="${w.id}">+ ${tx('remark')}</button><button class="link-btn" data-wl-del="${w.id}">${tx('delete')}</button></td>
+                  </tr>
+                  ${w.remark ? `<tr class="remark-row"><td></td><td colspan="6"><div class="remark-box">${tx('remark')}: ${w.remark}${w.reply ? `<div class="reply">${tx('reply')}: ${w.reply}</div>` : ''}</div></td></tr>` : ''}
+                `).join('')}
+              </tbody>
+            </table>
+            ${renderPagination()}
+          </div>
+          <aside class="order-summary">
+            <h3>${tx('orderDetails')}</h3>
+            <div class="thumb-grid">
+              ${selected.slice(0, 11).map((w) => miniImg(w.image, w.item)).join('')}
+              ${selected.length > 11 ? `<span class="more-thumb">${tx('more')}</span>` : ''}
+            </div>
+            <dl class="summary-list">
+              <div><dt>${tx('totalQty')}</dt><dd>${totalQty}${tx('pcs')}</dd></div>
+              <div><dt>${tx('totalVol')}</dt><dd>18.553m³</dd></div>
+              <div><dt>${tx('currency')}</dt><dd>${currencyCode(state)}</dd></div>
+              <div><dt>${tx('totalAmount')}</dt><dd>${fmt(totalAmt, true)}</dd></div>
+              <div><dt>${tx('discount')}</dt><dd class="red">-${fmt(discount, true)}</dd></div>
+              <div class="payable"><dt>${tx('payable')}</dt><dd>${fmt(payable, true)}</dd></div>
+            </dl>
+            <button class="btn-primary full" data-action="buy-now" ${!selected.length ? 'disabled' : ''}>${tx('buyNow')} (${totalQty})</button>
+          </aside>
+        </div>
+      </div>
+      ${state.modal === 'exception' ? renderExceptionModal() : ''}
+    `);
+  }
+
+  function renderExceptionModal() {
+    return `
+      <div class="modal-mask" data-action="close-modal">
+        <div class="modal exception-modal" onclick="event.stopPropagation()">
+          <h3>${tx('systemReminder')}</h3>
+          <p class="warn-text">${tx('exceptionWarn')}</p>
+          <table class="wishlist-table compact">
+            <thead><tr><th>Item</th><th>Specification</th><th>Price</th><th>Recommended For You</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="item-cell">${miniImg(FURNITURE_IMAGES[6], 'alt')}<div>G064-A-LSC255F047691<br/><span class="status-tag danger">Disco</span></div></div></td>
+                <td>Col: Vintage + Soft Yarn<br/>Sz: 2.37m</td>
+                <td>UP: $298.00</td>
+                <td><div class="rec-items">${miniImg(FURNITURE_IMAGES[1], 'rec')} ${miniImg(FURNITURE_IMAGES[3], 'rec')}</div></td>
+                <td><button class="link-btn">🗑</button><button class="link-btn">→</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="modal-actions">
+            <button class="btn-ghost" data-action="close-modal">${tx('cancel')}</button>
+            <button class="btn-primary" data-action="confirm-order">${tx('confirm')}</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderAccountSidebar() {
+    const items = [
+      { id: 'center', labelKey: 'personalCenter', icon: '👤' },
+      { id: 'account', labelKey: 'accountInfo', icon: '📋' },
+      { id: 'sub', labelKey: 'subAccount', icon: '👥' },
+      { groupKey: 'myOrder', children: [
+        { id: 'po', labelKey: 'poOrder' },
+        { id: 'dispatch', labelKey: 'dispatchNote' },
+        { id: 'payment', labelKey: 'paymentOrderMenu' },
+      ]},
+      { groupKey: 'myReport', children: [
+        { id: 'stock', label: 'Stock Hold Report' },
+        { id: 'lead', label: 'Lead Time Report' },
+      ]},
+      { id: 'favorite', labelKey: 'myFavorite', icon: '♥' },
+    ];
+    let html = '<aside class="account-sidebar">';
+    items.forEach((item) => {
+      if (item.groupKey) {
+        html += `<div class="side-group"><div class="side-title">${tx(item.groupKey)}</div>`;
+        item.children.forEach((c) => { html += `<a href="#/account/${c.id}" class="side-item ${state.accountPage === c.id ? 'active' : ''}">${c.labelKey ? tx(c.labelKey) : c.label}</a>`; });
+        html += '</div>';
+      } else {
+        html += `<a href="#/account/${item.id}" class="side-item ${state.accountPage === item.id ? 'active' : ''}">${item.icon || ''} ${tx(item.labelKey)}</a>`;
       }
     });
-  </script>
-  <script src="./mall-i18n.js" onerror="__demoLoadError('mall-i18n.js')"></script>
-  <script src="./mall-trade-demo.js" onerror="__demoLoadError('mall-trade-demo.js')"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var banner = document.getElementById('boot-banner');
-      if (banner) banner.remove();
+    html += '</aside>';
+    return html;
+  }
+
+  function renderPoPage() {
+    const tabs = [
+      { id: 'confirming', label: 'Confirming', count: 5 },
+      { id: 'unpaid', label: 'Unpaid', count: 2 },
+      { id: 'waitship', label: 'Wait Ship', count: 5 },
+      { id: 'waitrecv', label: 'Wait Receive', count: 3 },
+      { id: 'complete', label: 'Complete', count: 0 },
+      { id: 'closed', label: 'Closed', count: 5 },
+    ];
+    return renderShell(`
+      <div class="container page-account">
+        ${renderAccountSidebar()}
+        <section class="account-content">
+          <h2 class="page-title">${tx('poList')}</h2>
+          <div class="status-tabs">${tabs.map((t) => `<button class="status-tab ${state.poTab === t.id ? 'active' : ''}" data-po-tab="${t.id}">${tabLabel(t.id)}${t.count ? ` (${t.count})` : ''}</button>`).join('')}</div>
+          <div class="query-bar">
+            <input placeholder="PO NO." /><input placeholder="LS Code" /><input placeholder="Start Date - End Date" />
+            <select><option>Create Type</option></select>
+            <button class="btn-primary small">${tx('searchBtn')}</button><button class="link-btn">Adv</button>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>PO No.</th><th>C.PO NO.</th><th>Status</th><th>Currency</th><th>Created date</th><th>QTY</th><th>Total Amount</th><th>Remarks</th><th>Trade Term</th><th>Action</th></tr></thead>
+            <tbody>${PO_LIST.map((r) => `
+              <tr>
+                <td><a class="link-btn" data-po-detail="${r.poNo}">${r.poNo}</a></td>
+                <td>${r.cpoNo}</td><td>${statusText(state, r.status)}</td><td>${currencyCode(state)}</td><td>${r.created}</td>
+                  <td>${r.qty}</td><td>${fmt(r.amount, true)}</td><td>${r.remarks}</td><td>${r.tradeTerm}</td>
+                  <td class="action-cell"><button class="link-btn">${tx('copy')}</button><button class="link-btn">${tx('export')}</button><button class="link-btn danger">${tx('invalid')}</button></td>
+              </tr>
+            `).join('')}</tbody>
+          </table>
+          <div class="pagination right">${renderPagination()}</div>
+        </section>
+      </div>
+      ${state.modal === 'po-detail' ? renderPoDetailModal() : ''}
+    `);
+  }
+
+  function renderPoDetailModal() {
+    return `
+      <div class="modal-mask" data-action="close-modal">
+        <div class="modal po-detail-modal" onclick="event.stopPropagation()">
+          <button class="modal-close" data-action="close-modal">×</button>
+          <div class="modal-head row-between">
+            <div><h2>PO2604110100</h2><span class="status-tag">${statusText(state, 'Pending Shipment')}</span></div>
+            <div class="head-meta">${tx('creatingDate')}: 04/11/2026 | ${tx('tradeTerm')}: FOB | ${tx('currency')}: ${currencyCode(state)}</div>
+          </div>
+          <table class="data-table compact">
+            <thead><tr><th>Stat</th><th>Item</th><th>PO No.</th><th>Cust Item</th><th>LINSY Item</th><th>LINSY Specs</th><th>Est PCS/PKG</th><th>Act PCS/PKG</th></tr></thead>
+            <tbody>${Array.from({ length: 4 }, (_, i) => `
+              <tr>
+                <td>${statusText(state, 'Preparing')}</td>
+                <td><div class="item-cell">${miniImg(FURNITURE_IMAGES[i], 'item')}G064-A-LSC25${i}</div></td>
+                <td>PO2604110100</td><td>CUST-${i}</td><td>LSC25${i}</td><td>Col: Black / Sz: 2.37m</td><td>10/10</td><td>-</td>
+              </tr>
+            `).join('')}</tbody>
+          </table>
+          <div class="po-summary"><span>${tx('totalQty')}: 58${tx('pcs')}</span><span>Total PKG: 58${tx('pcs')}</span><span>${tx('totalVol')}: 18.553m³</span><span>${tx('payable')}: <b>${fmt(2563, true)}</b></span></div>
+          <div class="modal-actions"><button class="btn-ghost">${tx('cancel')}</button><button class="btn-primary" data-payment-jump="FKD26041123910">${tx('paymentRecord')}</button></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderDispatchPage() {
+    const tabs = [
+      { id: 'draft', label: 'Draft', count: 1 },
+      { id: 'unpaid', label: 'Unpaid', count: 2 },
+      { id: 'transit', label: 'In Transit', count: 10 },
+      { id: 'complete', label: 'Complete', count: 0 },
+    ];
+    return renderShell(`
+      <div class="container page-account">
+        ${renderAccountSidebar()}
+        <section class="account-content">
+          <h2 class="page-title">${tx('dispatchList')}</h2>
+          <div class="status-tabs">${tabs.map((t) => `<button class="status-tab ${state.dispatchTab === t.id ? 'active' : ''}" data-dispatch-tab="${t.id}">${tabLabel(t.id)}${t.count ? ` (${t.count})` : ''}</button>`).join('')}</div>
+          <div class="query-bar"><select><option>Ship No.</option></select><select><option>LS PI No.</option></select><input placeholder="Start Date - End Date" /><button class="btn-primary small">${tx('searchBtn')}</button></div>
+          <table class="data-table">
+            <thead><tr><th>NO.</th><th>Dispatch No.</th><th>Status</th><th>LS PI No.</th><th>Cust PO No.</th><th>Entry No.1</th><th>Entry No.2</th><th>Plan Qty/Pkg</th><th>Plan Load Date</th><th>Actual Load Date</th><th>Action</th></tr></thead>
+            <tbody>${DISPATCH_LIST.map((r) => `
+              <tr><td>${r.no}</td><td>${r.dispatchNo}</td><td>${r.status}</td><td>${r.lsPiNo}</td><td>${r.custPoNo}</td>
+              <td>${r.entry1}</td><td>${r.entry2}</td><td>${r.planQty}</td><td>${r.planDate}</td><td>${r.actualDate}</td>
+              <td><button class="link-btn" data-dispatch-detail="${r.dispatchNo}">${tx('view')}</button></td></tr>
+            `).join('')}</tbody>
+          </table>
+          <div class="pagination right">${renderPagination()}</div>
+        </section>
+      </div>
+      ${state.modal === 'dispatch-detail' ? renderDispatchDetailModal() : ''}
+    `);
+  }
+
+  function renderDispatchDetailModal() {
+    return `
+      <div class="modal-mask" data-action="close-modal">
+        <div class="modal po-detail-modal" onclick="event.stopPropagation()">
+          <button class="modal-close" data-action="close-modal">×</button>
+          <div class="modal-head"><h2>FYD260411024270</h2><span class="status-tag">Pending Shipment</span></div>
+          <div class="head-meta">Creating date: 04/11/2026 | Trade Term: FOB</div>
+          <table class="data-table compact">
+            <thead><tr><th>NO.</th><th>Item</th><th>PO No.</th><th>Cust Item</th><th>LINSY Item</th><th>LINSY Specs</th><th>Est PCS/PKG</th><th>Act PCS/PKG</th><th>Measure</th></tr></thead>
+            <tbody>${Array.from({ length: 5 }, (_, i) => `
+              <tr><td>${i + 1}</td><td><div class="item-cell">${miniImg(FURNITURE_IMAGES[i], 'item')}G064-${i}</div></td>
+              <td>PO2604110100</td><td>CUST-${i}</td><td>LSC25${i}</td><td>Col: Black</td><td>10/10</td><td>-</td><td>0.31m³</td></tr>
+            `).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderPaymentDetailModal(pay) {
+    if (!pay) return '';
+    const unpaid = pay.unpaidAmt;
+    return `
+      <div class="modal-mask" data-action="close-modal">
+        <div class="modal payment-detail-modal" onclick="event.stopPropagation()">
+          <button class="modal-close" data-action="close-modal">×</button>
+          <div class="modal-head row-between">
+            <div>
+              <h2>${pay.payNo}</h2>
+              <span class="status-tag ${pay.status === 'Unpaid' ? 'danger' : ''}">${statusText(state, pay.status)}</span>
+            </div>
+            <div class="head-meta">${tx('relOrder')}: ${pay.relOrder} | ${tx('createTime')}: ${pay.createTime} | ${tx('payType')}: ${pay.payType}</div>
+          </div>
+          <div class="payment-summary-grid">
+            <div class="pay-stat"><span>${tx('dueAmt')}</span><b>${fmt(pay.dueAmt, true)}</b></div>
+            <div class="pay-stat"><span>${tx('paidAmt')}</span><b>${fmt(pay.paidAmt, true)}</b></div>
+            <div class="pay-stat highlight"><span>${tx('unpaidAmt')}</span><b class="red">${fmt(unpaid, true)}</b></div>
+            <div class="pay-stat"><span>${tx('dueDate')}</span><b>${pay.dueDate}</b></div>
+            <div class="pay-stat"><span>${tx('remDays')}</span><b>${pay.remDays}</b></div>
+            <div class="pay-stat"><span>${tx('cutoffAmt')}</span><b>${fmt(pay.cutoffAmt, true)}</b></div>
+          </div>
+          <h3 class="sub-title">${tx('priceDetails')}</h3>
+          <div class="price-details">
+            <div class="price-row"><span>${tx('standardAmount')}</span><span>${fmt(pay.standardAmt, true)}</span></div>
+            <div class="price-row"><span>${tx('discountAmount')}</span><span class="red">-${fmt(pay.discountAmt, true)}</span></div>
+            <div class="price-row"><span>${tx('adjustAmount')}</span><span>${fmt(pay.adjustAmt, true)}</span></div>
+            <div class="price-row"><span>${tx('rebateAmount')}</span><span class="red">-${fmt(pay.rebateAmt, true)}</span></div>
+            <div class="price-row"><span>${tx('freight')}</span><span>${fmt(pay.freight, true)}</span></div>
+            <div class="price-row"><span>${tx('insuranceFee')}</span><span>${fmt(pay.insurance, true)}</span></div>
+            <div class="price-row total"><span>${tx('payableAmount')}</span><span>${fmt(pay.payableAmt, true)}</span></div>
+            <div class="price-row"><span>${tx('paidAmount')}</span><span>${fmt(pay.paidRecord, true)}</span></div>
+            <div class="price-row total"><span>${tx('unpaidAmount')}</span><span class="red">${fmt(unpaid, true)}</span></div>
+          </div>
+          <h3 class="sub-title">${tx('paymentRecords')}</h3>
+          <table class="data-table compact">
+            <thead><tr><th>Pay Date</th><th>Amount</th><th>Method</th><th>Reference</th><th>${tx('status')}</th></tr></thead>
+            <tbody>
+              <tr><td>04/15/2026</td><td>${fmt(pay.paidRecord, true)}</td><td>TT</td><td>REF-20260415001</td><td>${statusText(state, 'Confirmed')}</td></tr>
+              ${unpaid > 0 ? `<tr><td>-</td><td>${fmt(unpaid, true)}</td><td>TT</td><td>-</td><td><span class="status-tag danger">${statusText(state, 'Pending')}</span></td></tr>` : ''}
+            </tbody>
+          </table>
+          <div class="modal-actions">
+            <button class="btn-ghost" data-action="close-modal">${tx('close')}</button>
+            ${unpaid > 0 ? `<button class="btn-primary" data-action="collect-pay">${tx('collectPay')}</button>` : `<button class="btn-primary" disabled>${tx('paid')}</button>`}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderPaymentPage() {
+    const filtered = state.paymentTab === 'paid'
+      ? PAYMENT_LIST.filter((p) => p.status === 'Paid')
+      : PAYMENT_LIST.filter((p) => p.status === 'Unpaid');
+    const unpaidCount = PAYMENT_LIST.filter((p) => p.status === 'Unpaid').length;
+    const paidCount = PAYMENT_LIST.filter((p) => p.status === 'Paid').length;
+
+    return renderShell(`
+      <div class="container page-account">
+        ${renderAccountSidebar()}
+        <section class="account-content">
+          <h2 class="page-title">${tx('paymentOrder')}</h2>
+          <div class="status-tabs">
+            <button class="status-tab ${state.paymentTab === 'unpaid' ? 'active' : ''}" data-payment-tab="unpaid">${tx('unpaid')} (${unpaidCount})</button>
+            <button class="status-tab ${state.paymentTab === 'paid' ? 'active' : ''}" data-payment-tab="paid">${tx('paid')} (${paidCount})</button>
+          </div>
+          <div class="query-bar">
+            <button class="btn-ghost small">${tx('batchRefund')}</button>
+            <select><option>Rel. NO.</option></select>
+            <select><option>Pay NO.</option></select>
+            <input placeholder="Start Date - End Date" />
+            <button class="btn-primary small">${tx('searchBtn')}</button>
+          </div>
+          <table class="data-table">
+            <thead><tr><th></th><th>Pay No.</th><th>${tx('status')}</th><th>${tx('dueAmt')}</th><th>${tx('paidAmt')}</th><th>${tx('unpaidAmt')}</th><th>${tx('cutoffAmt')}</th><th>${tx('dueDate')}</th><th>${tx('remDays')}</th><th>${tx('payType')}</th><th>${tx('relOrder')}</th><th>${tx('createTime')}</th><th>${tx('opt')}</th></tr></thead>
+            <tbody>
+              ${filtered.map((r) => `
+                <tr>
+                  <td><input type="checkbox" /></td>
+                  <td><button class="link-btn" data-payment-detail="${r.payNo}">${r.payNo}</button></td>
+                  <td>${statusText(state, r.status)}</td>
+                  <td>${fmt(r.dueAmt, true)}</td><td>${fmt(r.paidAmt, true)}</td>
+                  <td><b>${fmt(r.unpaidAmt, true)}</b></td>
+                  <td>${fmt(r.cutoffAmt, true)}</td><td>${r.dueDate}</td><td>${r.remDays}</td>
+                  <td>${r.payType}</td><td>${r.relOrder}</td><td>${r.createTime}</td>
+                  <td><button class="link-btn" data-payment-detail="${r.payNo}">${tx('collectPay')}</button></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="pagination right">${renderPagination()}</div>
+        </section>
+      </div>
+      ${state.modal === 'payment-detail' ? renderPaymentDetailModal(state.paymentDetail) : ''}
+    `);
+  }
+
+  function renderAccountPage() {
+    switch (state.accountPage) {
+      case 'dispatch': return renderDispatchPage();
+      case 'payment': return renderPaymentPage();
+      case 'po':
+      default: return renderPoPage();
+    }
+  }
+
+  function startHomeAutoplay() {
+    clearInterval(state.homeTimer);
+    if (state.route === 'index') {
+      state.homeTimer = setInterval(() => {
+        state.homeSlide = (state.homeSlide + 1) % HOME_BANNERS.length;
+        const track = $('.hero-track');
+        const dots = $$('.hero-dot');
+        if (track) track.style.transform = `translateX(-${state.homeSlide * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle('on', i === state.homeSlide));
+      }, 5000);
+    }
+  }
+
+  function render() {
+    parseRoute();
+    clearInterval(state.homeTimer);
+    let html;
+    switch (state.route) {
+      case 'index': html = renderHomePage(); break;
+      case 'detail': html = renderDetailPageV2(); break;
+      case 'wishlist': html = renderWishlistPage(); break;
+      case 'account': html = renderAccountPage(); break;
+      case 'products':
+      default: html = renderProductsPage(); break;
+    }
+    $('#app').innerHTML = html;
+    bindEvents();
+    startHomeAutoplay();
+  }
+
+  function bindEvents() {
+    $$('[data-toggle-dropdown]').forEach((el) => el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = el.dataset.toggleDropdown;
+      state.openDropdown = state.openDropdown === key ? null : key;
+      render();
+    }));
+    $$('[data-set-locale]').forEach((el) => el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.locale = el.dataset.setLocale;
+      state.openDropdown = null;
+      savePrefs(state);
+      render();
+    }));
+    $$('[data-set-currency]').forEach((el) => el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.currency = el.dataset.setCurrency;
+      state.openDropdown = null;
+      savePrefs(state);
+      render();
+    }));
+    if (state.openDropdown) {
+      setTimeout(() => {
+        const onDocClick = () => {
+          state.openDropdown = null;
+          document.removeEventListener('click', onDocClick);
+          render();
+        };
+        document.addEventListener('click', onDocClick);
+      }, 0);
+    }
+
+    $$('[data-nav]').forEach((el) => el.addEventListener('click', () => navigate(el.dataset.nav)));
+    $$('[data-cat]').forEach((el) => el.addEventListener('click', () => { state.category = el.dataset.cat; navigate('products'); }));
+    $$('[data-cat-jump]').forEach((el) => el.addEventListener('click', (e) => {
+      e.preventDefault();
+      state.category = el.dataset.catJump;
+      navigate('products');
+    }));
+    $$('[data-hero-link]').forEach((el) => el.addEventListener('click', () => navigate(el.dataset.heroLink)));
+    $$('[data-hero-slide]').forEach((el) => el.addEventListener('click', () => {
+      const dir = el.dataset.heroSlide;
+      state.homeSlide = dir === 'next'
+        ? (state.homeSlide + 1) % HOME_BANNERS.length
+        : (state.homeSlide - 1 + HOME_BANNERS.length) % HOME_BANNERS.length;
+      render();
+    }));
+    $$('[data-hero-dot]').forEach((el) => el.addEventListener('click', () => { state.homeSlide = Number(el.dataset.heroDot); render(); }));
+    $$('[data-detail]').forEach((el) => el.addEventListener('click', (e) => {
+      if (e.target.closest('[data-fav]')) return;
+      navigate('detail', el.dataset.detail);
+    }));
+    $$('[data-fav]').forEach((el) => el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = el.dataset.fav;
+      if (state.favorites.has(id)) state.favorites.delete(id); else state.favorites.add(id);
+      showToast(state.favorites.has(id) ? tx('toastFavOn') : tx('toastFavOff'));
+      render();
+    }));
+    $$('[data-sort]').forEach((el) => el.addEventListener('click', () => { state.sort = el.dataset.sort; render(); }));
+    $$('[data-page]').forEach((el) => {
+      el.addEventListener('click', () => {
+        const p = el.dataset.page;
+        if (p === 'prev') state.page = Math.max(1, state.page - 1);
+        else if (p === 'next') state.page = Math.min(17, state.page + 1);
+        else state.page = Number(p);
+        render();
+      });
     });
+    const toggleFilter = $('[data-action="toggle-filter"]');
+    if (toggleFilter) toggleFilter.addEventListener('click', () => { state.showFilter = !state.showFilter; render(); });
+    $$('[data-detail-tab]').forEach((el) => el.addEventListener('click', () => {
+      state.detailTab = el.dataset.detailTab;
+      render();
+    }));
+    $$('[data-detail-thumb]').forEach((el) => el.addEventListener('click', () => { state.detailThumb = Number(el.dataset.detailThumb); render(); }));
+    $$('[data-detail-slide]').forEach((el) => el.addEventListener('click', () => {
+      const len = (state.detailProduct.gallery || []).length || 1;
+      state.detailThumb = el.dataset.detailSlide === 'next'
+        ? (state.detailThumb + 1) % len
+        : (state.detailThumb - 1 + len) % len;
+      render();
+    }));
+    $$('[data-lifestyle-slide]').forEach((el) => el.addEventListener('click', () => {
+      const p = state.detailProduct;
+      const len = (p.lifestyleGallery || p.gallery).length;
+      state.lifestyleSlide = el.dataset.lifestyleSlide === 'next'
+        ? (state.lifestyleSlide + 1) % len
+        : (state.lifestyleSlide - 1 + len) % len;
+      render();
+    }));
+    $$('[data-lifestyle-dot]').forEach((el) => el.addEventListener('click', () => { state.lifestyleSlide = Number(el.dataset.lifestyleDot); render(); }));
+    $$('[data-rec-slide]').forEach((el) => el.addEventListener('click', () => {
+      const key = el.dataset.recSlide;
+      const dir = el.dataset.dir;
+      const pool = key === 'recSeriesSlide'
+        ? getDetailRecommendations(state.detailProduct, 'series')
+        : getDetailRecommendations(state.detailProduct, 'category');
+      const maxStart = Math.max(0, pool.length - 5);
+      state[key] = dir === 'next'
+        ? Math.min(maxStart, (state[key] || 0) + 1)
+        : Math.max(0, (state[key] || 0) - 1);
+      render();
+    }));
+    $$('[data-spec-color]').forEach((el) => el.addEventListener('click', () => {
+      if (el.disabled) return;
+      onSpecDimSelect(state, 'color', el.dataset.specColor);
+      resolveSelectedSku(state, state.detailProduct);
+      render();
+    }));
+    $$('[data-spec-size]').forEach((el) => el.addEventListener('click', () => {
+      if (el.disabled) return;
+      onSpecDimSelect(state, 'size', el.dataset.specSize);
+      resolveSelectedSku(state, state.detailProduct);
+      render();
+    }));
+    $$('[data-spec-material]').forEach((el) => el.addEventListener('click', () => {
+      if (el.disabled) return;
+      onSpecDimSelect(state, 'material', el.dataset.specMaterial);
+      resolveSelectedSku(state, state.detailProduct);
+      render();
+    }));
+    $$('[data-style-sku]').forEach((el) => el.addEventListener('click', () => {
+      state.selectedStyleSkuId = el.dataset.styleSku;
+      resolveSelectedSku(state, state.detailProduct);
+      render();
+    }));
+    $$('[data-sale]').forEach((el) => el.addEventListener('click', () => {
+      state.saleType = el.dataset.sale;
+      const p = state.detailProduct;
+      resetSkuSelection(state);
+      state.detailQty = state.saleType === 'custom' ? (p.customMoq || p.moq) : p.moq;
+      render();
+    }));
+    $$('[data-mode]').forEach((el) => el.addEventListener('click', () => {
+      if (el.dataset.mode === 'list') {
+        state.detailMode = 'list';
+        state.listModeOpen = true;
+      } else {
+        state.detailMode = 'variations';
+        state.listModeOpen = false;
+      }
+      render();
+    }));
+    $$('[data-qty]').forEach((el) => el.addEventListener('click', () => {
+      const p = state.detailProduct;
+      const minQty = state.saleType === 'custom' ? (p.customMoq || p.moq) : 0;
+      state.detailQty = Math.max(minQty, Math.min(p.stock, state.detailQty + Number(el.dataset.qty)));
+      render();
+    }));
+    const qtyInput = $('#detailQtyInput');
+    if (qtyInput) qtyInput.addEventListener('change', () => {
+      const p = state.detailProduct;
+      const minQty = state.saleType === 'custom' ? (p.customMoq || p.moq) : 0;
+      state.detailQty = Math.max(minQty, Math.min(p.stock, parseInt(qtyInput.value, 10) || minQty));
+      render();
+    });
+    const addWish = $('[data-action="add-wishlist"]');
+    if (addWish) addWish.addEventListener('click', () => showToast(tx('toastWishlist')));
+    const toggleFavDetail = $('[data-action="toggle-fav-detail"]');
+    if (toggleFavDetail) toggleFavDetail.addEventListener('click', () => {
+      const id = state.detailProduct.id;
+      if (state.favorites.has(id)) state.favorites.delete(id);
+      else state.favorites.add(id);
+      showToast(state.favorites.has(id) ? tx('toastFavOn') : tx('toastFavOff'));
+      render();
+    });
+    $$('[data-action="close-list-mode"]').forEach((el) => el.addEventListener('click', () => {
+      state.listModeOpen = false;
+      state.detailMode = 'variations';
+      render();
+    }));
+    $$('[data-drawer-sale]').forEach((el) => el.addEventListener('click', () => {
+      state.listDrawerSaleType = el.dataset.drawerSale;
+      render();
+    }));
+    $$('[data-row-check]').forEach((el) => el.addEventListener('change', () => {
+      const row = state.listModeRows.find((r) => r.id === el.dataset.rowCheck);
+      if (row) row.checked = el.checked;
+      render();
+    }));
+    $$('[data-row-qty]').forEach((el) => el.addEventListener('click', () => {
+      const row = state.listModeRows.find((r) => r.id === el.dataset.rowQty);
+      if (row) { row.qty = Math.max(0, row.qty + Number(el.dataset.delta)); if (row.qty > 0) row.checked = true; render(); }
+    }));
+    const batchAdd = $('[data-action="batch-add-wishlist"]');
+    if (batchAdd) batchAdd.addEventListener('click', () => {
+      state.listModeOpen = false;
+      state.detailMode = 'variations';
+      showToast(tx('toastBatchWishlist'));
+      render();
+    });
+    $$('[data-wl-check]').forEach((el) => el.addEventListener('change', () => {
+      const item = state.wishlist.find((w) => w.id === el.dataset.wlCheck);
+      if (item) item.selected = el.checked;
+      render();
+    }));
+    $$('[data-wl-qty]').forEach((el) => el.addEventListener('click', () => {
+      const item = state.wishlist.find((w) => w.id === el.dataset.wlQty);
+      if (item) { item.qty = Math.max(item.moq, item.qty + Number(el.dataset.delta)); render(); }
+    }));
+    $$('[data-wl-del]').forEach((el) => el.addEventListener('click', () => {
+      state.wishlist = state.wishlist.filter((w) => w.id !== el.dataset.wlDel);
+      showToast(tx('toastDeleted'));
+      render();
+    }));
+    const clearInvalid = $('[data-wl="clear-invalid"]');
+    if (clearInvalid) clearInvalid.addEventListener('click', () => {
+      state.wishlist = state.wishlist.filter((w) => w.status === 'Current');
+      showToast(tx('toastClearInvalid'));
+      render();
+    });
+    const buyNow = $('[data-action="buy-now"]');
+    if (buyNow) buyNow.addEventListener('click', () => {
+      const hasException = state.wishlist.some((w) => w.selected && w.status !== 'Current');
+      if (hasException || state.wishlist.some((w) => w.status === 'Pending Disco')) {
+        state.modal = 'exception';
+        render();
+      } else {
+        showToast(tx('toastOrderCreated'));
+        navigate('account', 'po');
+      }
+    });
+    $$('[data-action="close-modal"]').forEach((el) => el.addEventListener('click', () => { state.modal = null; state.paymentDetail = null; render(); }));
+    const confirmOrder = $('[data-action="confirm-order"]');
+    if (confirmOrder) confirmOrder.addEventListener('click', () => {
+      state.modal = null;
+      showToast(tx('toastOrderCreated'));
+      navigate('account', 'po');
+    });
+    const collectPay = $('[data-action="collect-pay"]');
+    if (collectPay) collectPay.addEventListener('click', () => showToast(tx('toastCollectPay')));
+    $$('[data-po-tab]').forEach((el) => el.addEventListener('click', () => { state.poTab = el.dataset.poTab; render(); }));
+    $$('[data-dispatch-tab]').forEach((el) => el.addEventListener('click', () => { state.dispatchTab = el.dataset.dispatchTab; render(); }));
+    $$('[data-payment-tab]').forEach((el) => el.addEventListener('click', () => { state.paymentTab = el.dataset.paymentTab; render(); }));
+    $$('[data-po-detail]').forEach((el) => el.addEventListener('click', () => { state.modal = 'po-detail'; render(); }));
+    $$('[data-dispatch-detail]').forEach((el) => el.addEventListener('click', () => { state.modal = 'dispatch-detail'; render(); }));
+    $$('[data-payment-detail]').forEach((el) => el.addEventListener('click', () => {
+      const pay = PAYMENT_LIST.find((p) => p.payNo === el.dataset.paymentDetail);
+      state.paymentDetail = pay || PAYMENT_LIST[0];
+      state.modal = 'payment-detail';
+      render();
+    }));
+    const paymentJump = $('[data-payment-jump]');
+    if (paymentJump) paymentJump.addEventListener('click', () => {
+      const pay = PAYMENT_LIST.find((p) => p.payNo === paymentJump.dataset.paymentJump) || PAYMENT_LIST[0];
+      state.paymentDetail = pay;
+      state.modal = 'payment-detail';
+      navigate('account', 'payment');
+    });
+  }
+
+  function boot() {
+    try {
+      window.addEventListener('hashchange', render);
+      if (!location.hash) location.hash = '#/detail/p1';
+      render();
+    } catch (err) {
+      const app = document.getElementById('app');
+      if (app) {
+        app.innerHTML = `<pre style="padding:24px;color:#e53935;white-space:pre-wrap;font-family:sans-serif">Demo Error: ${err.message}\n\n${err.stack || ''}</pre>`;
+      }
+      console.error(err);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+
+
+
   </script>
 </body>
 </html>
